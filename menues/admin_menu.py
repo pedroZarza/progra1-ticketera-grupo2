@@ -1,0 +1,51 @@
+
+def show_admin_menu(user):
+    while True:
+        print("\n==========================================================\n")
+        print("EVENTPASS - ADMIN PANEL".center(58))
+        print(f"Usuario: {user['username']}".center(58))
+        print("\n==========================================================")
+        print("1. Dar de alta un venue")
+        print("2. Gestionar venues (consultar / editar / inactivar / eliminar)")
+        print("3. Gestionar sectores (cupo general o butacas numeradas)")
+        print("4. Gestionar categorías de eventos")
+        print("5. Consultar calendario de venues")
+        print("6. Consultar estadísticas por venue")
+        print("7. Dar de alta un usuario (organizador o comprador)")
+        print("8. Gestionar usuarios (consultar / inactivar / restablecer contraseña)")
+        print("9. Gestionar eventos (consultar / deshabilitar / eliminar / historial)")
+        print("10. Consultar estadísticas generales de la plataforma")
+        print("0. Cerrar sesión")
+        print("----------------------------------------------------------")
+        option = input(">>> ")
+        
+        if option == "0" or option.lower() == "x" or option == "exit" or option == "q" or option == "-1":
+            break
+        
+        match option:
+            case "1":
+                pass  # venue_handler.create_venue()
+            case "2":
+                pass  # venue_handler.manage_venues()
+            case "3":
+                pass  # venue_handler.manage_sectors()
+            case "4":
+                pass  # event_handler.manage_categories()
+            case "5":
+                pass  # venue_handler.view_calendar()
+            case "6":
+                pass  # venue_handler.view_statistics()
+            case "7":
+                pass  # user_handler.create_user()
+            case "8":
+                pass  # user_handler.manage_users()
+            case "9":
+                pass  # event_handler.manage_events()
+            case "10":
+                pass  # event_handler.view_platform_statistics()
+            case "0":
+                break
+            case _:
+                print("Opción inválida, elija una opción existente.")
+                
+                
