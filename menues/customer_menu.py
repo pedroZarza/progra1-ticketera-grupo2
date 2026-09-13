@@ -1,3 +1,4 @@
+from utils.messages import show_error
 
 def show_customer_menu(user):
     while True:
@@ -17,7 +18,7 @@ def show_customer_menu(user):
         print("----------------------------------------------------------")
         option = input(">>> ")
         
-        if option == "0" or option.lower() == "x" or option == "exit" or option == "q" or option == "-1":
+        if option.lower() in ("0", "x", "exit", "q", "-1"):
             break
         
         match option:
@@ -40,4 +41,4 @@ def show_customer_menu(user):
             case "0":
                 break
             case _:
-                print("Opción inválida, elija una opción existente.")
+                show_error("Opción inválida, elija una opción existente.")

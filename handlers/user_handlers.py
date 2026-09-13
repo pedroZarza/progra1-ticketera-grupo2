@@ -21,7 +21,10 @@ def login():
     
 def register_user():
     operationSuccess = False
+    user = None
     while not operationSuccess:
+        role = input_helpers.prompt_role_selection()
+        if role.lower() == "q": return
         username = input_helpers.prompt_username_field("\nIngrese un nombre de usuario (min. 4 caracteres): ")
         if username.lower() == "q": return
         password = input_helpers.prompt_password_field("Ingrese una contraseña: ")
@@ -32,7 +35,7 @@ def register_user():
             show_error("Las contraseñas no coinciden")
             passwordCheck = input("Ingrese nuevamente la contraseña: ")
             if passwordCheck.lower() == "q": return
-        newUser = {"username": username, "password": password}
+        newUser = {"username": username, "password": password, "role": role}
         success, user = service.create_user(newUser)
         if success:
             show_success(f'Usuario {user["username"]} registrado exitosamente!')
@@ -41,7 +44,6 @@ def register_user():
             show_error("El nombre de usuario ya está registrado. Inicie sesión con su cuenta.")
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
             if response == "q": return
-    return
-           
+    return user          
 
     

@@ -8,7 +8,7 @@ def authenticate_user(username, password):
 
 def create_user(newUserData):
     for user in users_data.users:
-        if user["username"] == newUserData["username"]:
+        if str(user["username"]).lower() == str(newUserData["username"]).lower():
             return False, "username_taken" 
     users_data.users.append(newUserData)
     return True, newUserData

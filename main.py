@@ -2,6 +2,7 @@ from handlers import user_handlers
 from menues.organizer_menu import show_organizer_menu
 from menues.customer_menu import show_customer_menu
 from menues.admin_menu import show_admin_menu
+from utils.messages import show_error
 
 
 def main():  
@@ -21,9 +22,6 @@ def main():
         
         if option.lower() in ("0", "x", "exit", "q", "-1"):
             break
-        # if option == "0" or option.lower() == "x" or option == "exit" or option == "q" or option == "-1":
-        #     break
-
         match option:
             case "1":
                 pass
@@ -32,10 +30,11 @@ def main():
                 if user != None:
                     redirect_by_user_role(user)
             case "3":
-                user_handlers.register_user()
+                user = user_handlers.register_user()
+                if user != None:
+                    redirect_by_user_role(user) #loguea automáticamente luego del registro. 
             case _:
-                print("Opción incorrecta, elija una opción existente.")
-                # input("\nPresiona ENTER para continuar...")
+                show_error("Opción incorrecta, elija una opción existente.")
             
                 
 def redirect_by_user_role(user):
