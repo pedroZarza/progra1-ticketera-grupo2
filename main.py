@@ -1,4 +1,4 @@
-from handlers import user_handlers
+from handlers import user_handlers, events_handlers
 from menues.organizer_menu import show_organizer_menu
 from menues.customer_menu import show_customer_menu
 from menues.admin_menu import show_admin_menu
@@ -24,7 +24,7 @@ def main():
             break
         match option:
             case "1":
-                pass
+                events_handlers.show_events()
             case "2":
                 user = user_handlers.login()
                 if user != None:
