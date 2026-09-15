@@ -1,4 +1,5 @@
 from utils.messages import show_error
+from handlers.events_handlers import create_event
 
 def show_organizer_menu(user):
     while True:
@@ -28,7 +29,7 @@ def show_organizer_menu(user):
 
         match option:
             case "1":
-                pass  # event_handler.create_event()
+                create_event(user["id"]) 
             case "2":
                 pass  # event_handler.view_my_events()
             case "3":
@@ -55,5 +56,3 @@ def show_organizer_menu(user):
                 break
             case _:
                 show_error("Opción inválida, elija una opción existente.")
-                
-                
