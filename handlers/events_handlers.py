@@ -99,3 +99,28 @@ def search_event_by_name(organizerId):
         
     input("\nPresiona ENTER para volver al menú principal...")
     return
+
+def search_event_by_category(organizerId):
+    
+    print("\n" + "="*55)
+    print("            BUSCAR EVENTO POR CATEGORÍA".center(55))
+    print("="*55)
+    
+    availableCategories = ", ".join(categories)
+    category_term = input(f"Ingrese la categoría a buscar ({availableCategories}): ").strip()
+    
+    if not category_term:
+        print("\n[ADVERTENCIA] No ingresaste ninguna categoría.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+        
+    results = service.search_organizer_events_by_category_service(category_term, organizerId)
+    
+    if not results:
+        print(f"\n[INFO] No tenés eventos registrados en la categoría '{category_term}'.")
+    else:
+        print(f"\n[INFO] Se encontraron {len(results)} evento(s) de {category_term.capitalize()}:")
+        layout_helpers.events_board(results)
+        
+    input("\nPresiona ENTER para volver al menú principal...")
+    return

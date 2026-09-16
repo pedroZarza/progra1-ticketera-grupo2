@@ -80,10 +80,29 @@ def search_organizer_events_by_name_service(search_term, organizerId):
     
     my_events = get_events_by_organizer_service(organizerId)
     
-    # --- ACÁ ESTÁ EL CAMBIO ---
     found_events = [
         event for event in my_events 
         if search_term.lower() == event.get("name", "").lower()
     ]
     
+    return found_events
+
+def search_organizer_events_by_category_service(category_term, organizerId):
+    """
+    Busca eventos de un organizador que contengan el término ingresado 
+    dentro de su lista de categorías o categoría singular (ignorando tildes y mayúsculas).
+    """
+    my_events = get_events_by_organizer_service(organizerId)
+    term = category_term.lower().strip()
+    
+    found_events = []
+    for event in my_events:
+        event_categories = [str(c).lower() for c in event.get("categories", [])]
+        singular_category = str(event.get("category", "")).lower()
+        match_in_list = any(term in cat for cat in event_categories)
+        match_in_singular = term in singular_category
+        
+        if match_in_list or match_in_singular:
+            found_events.append(event)
+            
     return found_events

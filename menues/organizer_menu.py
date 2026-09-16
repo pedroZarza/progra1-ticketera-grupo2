@@ -1,5 +1,5 @@
 from utils.messages import show_error
-from handlers.events_handlers import create_event, view_my_events, search_event_by_name
+from handlers.events_handlers import create_event, view_my_events, search_event_by_name, search_event_by_category
 
 def show_organizer_menu(user):
     while True:
@@ -35,7 +35,7 @@ def show_organizer_menu(user):
             case "3":
                 search_event_by_name(user["id"])
             case "4":
-                pass  # event_handler.edit_event()
+                search_event_by_category(user["id"])
             case "5":
                 pass  # event_handler.assign_categories()
             case "6":
