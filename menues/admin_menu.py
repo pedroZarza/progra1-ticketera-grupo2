@@ -1,5 +1,6 @@
 from utils.messages import show_error
 from handlers import category_handlers
+from handlers import venue_handlers
 
 def show_admin_menu(user):
     while True:
@@ -33,15 +34,15 @@ def show_admin_menu(user):
             case "2":
                 category_handlers.create_category()
             case "3":
-                pass  # venue_handler.manage_sectors()
+                venue_handlers.show_venues()
             case "4":
-                pass  # event_handler.manage_categories()
+                venue_handlers.edit_venue()
             case "5":
                  category_handlers.delete_category()
             case "6":
-                pass  # venue_handler.view_statistics()
+               venue_handlers.deactivate_venue()
             case "7":
-                pass  # user_handler.create_user()
+                venue_handlers.delete_venue()
             case "8":
                 pass  # user_handler.manage_users()
             case "9":
