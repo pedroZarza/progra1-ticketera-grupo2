@@ -59,3 +59,19 @@ def create_event(organizerId):
 
     input("\nPresiona ENTER para volver al menú principal...")
     return
+
+def view_my_events(organizerId):
+    
+    print("\n" + "="*55)
+    print("              MIS EVENTOS PUBLICADOS".center(55))
+    print("="*55)
+    
+    myEvents = service.get_events_by_organizer_service(organizerId)
+    
+    if not myEvents:
+        print("\n[INFO] Todavía no tenés ningún evento publicado.")
+    else:
+        layout_helpers.events_board(myEvents)
+            
+    input("\nPresiona ENTER para volver al menú principal...")
+    return

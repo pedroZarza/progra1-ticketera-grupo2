@@ -1,5 +1,5 @@
 from utils.messages import show_error
-from handlers.events_handlers import create_event
+from handlers.events_handlers import create_event, view_my_events
 
 def show_organizer_menu(user):
     while True:
@@ -31,7 +31,7 @@ def show_organizer_menu(user):
             case "1":
                 create_event(user["id"]) 
             case "2":
-                pass  # event_handler.view_my_events()
+                view_my_events(user["id"])
             case "3":
                 pass  # event_handler.set_prices_by_sector()
             case "4":
