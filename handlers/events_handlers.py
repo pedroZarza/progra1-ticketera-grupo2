@@ -75,3 +75,27 @@ def view_my_events(organizerId):
             
     input("\nPresiona ENTER para volver al menú principal...")
     return
+
+def search_event_by_name(organizerId):
+    
+    print("\n" + "="*55)
+    print("              BUSCAR EVENTO POR NOMBRE".center(55))
+    print("="*55)
+    
+    search_term = input("Ingrese el nombre exacto del evento a buscar: ").strip()
+    
+    if not search_term:
+        print("\n[ADVERTENCIA] No ingresaste ningún texto de búsqueda.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+        
+    results = service.search_organizer_events_by_name_service(search_term, organizerId)
+    
+    if not results:
+        print(f"\n[INFO] No se encontró ningún evento que se llame exactamente '{search_term}'.")
+    else:
+        print(f"\n[INFO] Evento encontrado:")
+        layout_helpers.events_board(results)
+        
+    input("\nPresiona ENTER para volver al menú principal...")
+    return
