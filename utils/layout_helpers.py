@@ -14,8 +14,9 @@ def events_board(events):
         datetimeObj = datetime.fromisoformat(event["datetime"])
         date = datetimeObj.strftime("%d-%m-%Y")
         time = datetimeObj.strftime("%H:%M")
-        print(f"\n[{event['id']}] {event['name']}")
-        print(f"    📅 {date} | 🕒 {time} | 📍 {event['venue']} | 🎭 {", ".join(event["categories"])}\n")
+        
+        print(f"\n[{str(event['id'])[:8]}] {event['name']}") 
+        print(f"    📅 {date} | 🕒 {time} | 📍 {event['venue']} | 🎭 {', '.join(event['categories'])}\n")
 
 
 def event_detail(event):
@@ -92,4 +93,3 @@ def event_detail(event):
     print(f"Lugares disponibles: {total_event_available}")
     print(f"Lugares ocupados: {total_event_sold}")
     print(f"Ocupación total: {total_occupancy:.1f}%")
-    
