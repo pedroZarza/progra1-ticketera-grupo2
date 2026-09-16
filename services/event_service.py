@@ -15,7 +15,7 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
 
     if not all(char.isalnum() or char.isspace() for char in description):
         raise ValueError("La descripción del evento no puede contener caracteres especiales. Solo se permiten letras, números y espacios.")
-    
+
     venue = next((v for v in venues if str(v["id"]) == str(venueIdStr)), None)
     if not venue:
         raise ValueError("El venue seleccionado no existe.")
@@ -36,7 +36,15 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
         raise ValueError(f"El horario {eventTimeStr} no está disponible para este venue. Opciones: {', '.join(venue['time_slots'])}")
 
     for event in events:
-        if str(event.get("venueId")) == str(venue["id"]) and event.get("datetime") == isoDatetime and event.get("state") != "canceled":
+        is_same_venue = str(event.get("venueId")) == str(venue["id"]) or event.get("venue") == venue.get("name")
+        
+        is_same_time = False
+        if event.get("datetime"):
+            existing_dt = datetime.fromisoformat(event.get("datetime"))
+            if existing_dt == eventDate:
+                is_same_time = True
+                
+        if is_same_venue and is_same_time and event.get("state") != "canceled":
             raise ValueError("El venue ya tiene un evento programado para esa misma fecha y horario.")
 
     matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
