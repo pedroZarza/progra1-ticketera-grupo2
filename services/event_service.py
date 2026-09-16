@@ -75,3 +75,15 @@ def get_events_by_organizer_service(organizerId):
     organizerEvents.sort(key=lambda e: e.get("datetime", ""))
     
     return organizerEvents
+
+def search_organizer_events_by_name_service(search_term, organizerId):
+    
+    my_events = get_events_by_organizer_service(organizerId)
+    
+    # --- ACÁ ESTÁ EL CAMBIO ---
+    found_events = [
+        event for event in my_events 
+        if search_term.lower() == event.get("name", "").lower()
+    ]
+    
+    return found_events
