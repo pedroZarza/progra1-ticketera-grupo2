@@ -1,3 +1,4 @@
+from data import categories_data
 from utils import input_helpers
 from services import category_service as service
 from utils.messages import show_error, show_success
@@ -19,6 +20,12 @@ def create_category():
         show_error("La categoría ya existe.")
 
 def delete_category():
+    categories = service.get_categories()
+
+    print("\nCategorías disponibles:")
+    for category in categories:
+        print(f"- {category}")
+
     category = input_helpers.prompt_non_empty_field(
         "\nIngrese el nombre de la categoría a eliminar: "
     )
@@ -32,3 +39,4 @@ def delete_category():
         show_success(f"Categoría '{category}' eliminada exitosamente.")
     else:
         show_error("La categoría no existe.")
+

@@ -16,3 +16,6 @@ def remove_category(category):
             return True
 
     return False
+
+def get_categories():
+    return categories_data.categories
