@@ -80,10 +80,20 @@ def search_organizer_events_by_name_service(search_term, organizerId):
     
     my_events = get_events_by_organizer_service(organizerId)
     
-    # --- ACÁ ESTÁ EL CAMBIO ---
     found_events = [
         event for event in my_events 
         if search_term.lower() == event.get("name", "").lower()
+    ]
+    
+    return found_events
+
+def search_organizer_events_by_category_service(category_term, organizerId):
+   
+    my_events = get_events_by_organizer_service(organizerId)
+    
+    found_events = [
+        event for event in my_events 
+        if category_term.lower() == event.get("category", "").lower()
     ]
     
     return found_events
