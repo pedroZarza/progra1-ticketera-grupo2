@@ -11,6 +11,7 @@ def show_admin_menu(user):
         print("2. Dar de alta nueva categoría de evento")
         print("3. Consultar venues del sistema")
         print("4. Editar un venue")
+        print("5. Eliminar categoría de evento")
         print("6. Inactivar venue")
         print("7. Eliminar venue")
         print("8. Consultar estadísticas por venue")
@@ -36,7 +37,7 @@ def show_admin_menu(user):
             case "4":
                 pass  # event_handler.manage_categories()
             case "5":
-                pass  # venue_handler.view_calendar()
+                 category_handlers.delete_category()
             case "6":
                 pass  # venue_handler.view_statistics()
             case "7":
