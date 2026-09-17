@@ -1,3 +1,4 @@
+import uuid  # <-- NUEVA IMPORTACIÓN
 from utils import input_helpers
 from services import user_service as service
 from utils.messages import show_error, show_success, show_info, show_warning
@@ -11,7 +12,7 @@ def login():
         if username.lower() == "q": return
         success, user = service.authenticate_user(username, password)
         if success:
-            show_success(f"Sesión iniciada exitosamente! Usuario: {user["username"]}")
+            show_success(f"Sesión iniciada exitosamente! Usuario: {user['username']}")
             return user
         show_error(f"Credenciales Incorrectas. Intentos restantes: { 3 - attempts}")
         attempts += 1
@@ -35,7 +36,14 @@ def register_user():
             show_error("Las contraseñas no coinciden")
             passwordCheck = input("Ingrese nuevamente la contraseña: ")
             if passwordCheck.lower() == "q": return
-        newUser = {"username": username, "password": password, "role": role}
+            
+        newUser = {
+            "id": str(uuid.uuid4()), 
+            "username": username, 
+            "password": password, 
+            "role": role
+        }
+        
         success, user = service.create_user(newUser)
         if success:
             show_success(f'Usuario {user["username"]} registrado exitosamente!')
@@ -44,6 +52,4 @@ def register_user():
             show_error("El nombre de usuario ya está registrado. Inicie sesión con su cuenta.")
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
             if response == "q": return
-    return user          
-
-    
+    return user
