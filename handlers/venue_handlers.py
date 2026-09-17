@@ -2,19 +2,33 @@ from services import venue_service as service
 from utils import input_helpers
 from utils.messages import show_info, show_success, show_error
 
-def prompt_positive_number(message):
-    while True:
-        value = input(message).strip()
 
-        if value.isdigit() and int(value) > 0:
-            return int(value)
 
-        show_error("Ingrese un número entero mayor que cero.")
+def show_venues():
+    venues = service.get_venues()
+
+    if len(venues) == 0:
+        show_info("No hay venues registrados.")
+        return
+
+    print("\nVENUES DEL SISTEMA")
+
+    for venue in venues:
+        print(f"\nID: {venue['id']}")
+        print(f"Nombre: {venue['name']}")
+        print(f"Dirección: {venue['address']}")
+        print(f"Estado: {'Activo' if venue['active'] else 'Inactivo'}")
+        print("Sectores:")
+
+        for sector_name in venue["sectors"]:
+            print(f"- {sector_name}")
+
+
 
 def create_sectors():
     sectors = {}
 
-    amount = prompt_positive_number("Ingrese la cantidad de sectores: ")
+    amount = input_helpers.prompt_positive_number("Ingrese la cantidad de sectores: ")
 
     for i in range(amount):
         print(f"\nSector {i + 1}")
@@ -38,7 +52,7 @@ def create_sectors():
             show_error("Seleccione una opción válida.")
 
         if sector_type == "1":
-            capacity = prompt_positive_number("Ingrese la capacidad: ")
+            capacity = input_helpers.prompt_positive_number("Ingrese la capacidad: ")
 
             sectors[name] = {
                 "type": "general",
@@ -46,8 +60,8 @@ def create_sectors():
             }
 
         else:
-            rows = prompt_positive_number("Ingrese la cantidad de filas: ")
-            columns = prompt_positive_number("Ingrese la cantidad de columnas: ")
+            rows = input_helpers.prompt_positive_number("Ingrese la cantidad de filas: ")
+            columns = input_helpers.prompt_positive_number("Ingrese la cantidad de columnas: ")
 
             sectors[name] = {
                 "type": "numbered",
@@ -69,7 +83,7 @@ def create_venue():
         return
 
     time_slots = []
-    amount = prompt_positive_number("Cantidad de horarios: ")
+    amount = input_helpers.prompt_positive_number("Cantidad de horarios: ")
 
     for i in range(amount):
         while True:
@@ -102,28 +116,8 @@ def create_venue():
     else:
         show_error("Ya existe un venue con ese nombre.")
 
-def show_venues():
-    venues = service.get_venues()
-
-    if len(venues) == 0:
-        show_info("No hay venues registrados.")
-        return
-
-    print("\nVENUES DEL SISTEMA")
-
-    for venue in venues:
-        print(f"\nID: {venue['id']}")
-        print(f"Nombre: {venue['name']}")
-        print(f"Dirección: {venue['address']}")
-        print(f"Estado: {'Activo' if venue['active'] else 'Inactivo'}")
-        print("Sectores:")
-
-        for sector_name in venue["sectors"]:
-            print(f"- {sector_name}")
-
 def edit_venue():
     show_venues()
-
     venue_id = input_helpers.prompt_non_empty_field(
         "\nIngrese el ID del venue que desea editar: "
     )

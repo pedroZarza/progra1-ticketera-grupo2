@@ -15,8 +15,8 @@ def show_admin_menu(user):
         print("5. Eliminar categoría de evento")
         print("6. Inactivar venue")
         print("7. Eliminar venue")
-        print("8. Consultar estadísticas por venue")
-        print("9. Consultar calendario de venues")
+        #print("8. Consultar estadísticas por venue")
+        #print("9. Consultar calendario de venues")
         print("0. Cerrar sesión")  
         # print("7. Dar de alta un usuario (organizador o comprador)")
         # print("8. Gestionar usuarios (consultar / inactivar / restablecer contraseña)")
@@ -44,7 +44,8 @@ def show_admin_menu(user):
             case "7":
                 venue_handlers.delete_venue()
             case "8":
-                venue_handlers.show_venue_statistics()
+                pass
+                #venue_handlers.show_venue_statistics()
             case "9":
                 pass  # event_handler.manage_events()
             case "10":

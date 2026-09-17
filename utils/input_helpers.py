@@ -71,3 +71,13 @@ def prompt_password_field(message):
         else:
             show_error("La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.")
     return field
+
+
+def prompt_positive_number(message):
+    while True:
+        value = input(message).strip()
+
+        if value.isdigit() and int(value) > 0:
+            return int(value)
+
+        show_error("Ingrese un número entero mayor que cero.")
