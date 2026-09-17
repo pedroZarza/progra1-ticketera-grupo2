@@ -207,3 +207,32 @@ def update_event_prices_service(organizerId, eventId, prices):
         event["sectors"][sectorName]["price"] = price
 
     return event
+
+def assign_category_service(organizerId, eventId, category):
+   
+    my_events = get_events_by_organizer_service(organizerId)
+    
+    matching_events = [
+        e for e in my_events 
+        if str(e.get("id")) == str(eventId) or str(e.get("id")).startswith(str(eventId))
+    ]
+    
+    if not matching_events:
+        raise ValueError("El evento no existe o no tenés permisos para modificarlo.")
+        
+    if len(matching_events) > 1:
+        raise ValueError("Se encontraron múltiples eventos con ese prefijo de ID. Por favor, ingrese más caracteres para ser específico.")
+        
+    event = matching_events[0]
+    
+    if not category:
+        raise ValueError("Debe ingresar una categoría válida.")
+        
+    matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
+    if not matchedCategory:
+        raise ValueError(f"Categoría inexistente. Opciones válidas: {', '.join(categories)}")
+        
+    event["category"] = matchedCategory
+    event["categories"] = [matchedCategory]
+    
+    return event
