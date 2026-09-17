@@ -102,7 +102,7 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
             }
             
     if len(events) > 0:
-        eventId = events[-1] + 1 
+        eventId = events[-1]["id"] + 1 
     else:
         eventId = 1       
         
