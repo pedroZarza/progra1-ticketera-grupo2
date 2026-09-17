@@ -47,7 +47,7 @@ def create_event(organizerId):
         print("¡El evento fue creado correctamente!")
         print(f"-> ID del Evento: {newEvent['id']}")
         print(f"-> Nombre: {newEvent['name']}")
-        print(f"-> Sectores cargados: {', '.join(newEvent['sectorPrices'].keys())}")
+        print(f"-> Sectores cargados: {', '.join(newEvent['sectors'].keys())}")
         print("-" * 45)
         print("* Recordá definir los precios por sector para habilitar la venta.")
         
