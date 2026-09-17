@@ -47,7 +47,7 @@ def create_event(organizerId):
         print("¡El evento fue creado correctamente!")
         print(f"-> ID del Evento: {newEvent['id']}")
         print(f"-> Nombre: {newEvent['name']}")
-        print(f"-> Sectores cargados: {', '.join(newEvent['sectorPrices'].keys())}")
+        print(f"-> Sectores cargados: {', '.join(newEvent['sectors'].keys())}")
         print("-" * 45)
         print("* Recordá definir los precios por sector para habilitar la venta.")
         
@@ -190,3 +190,72 @@ def edit_event(organizerId):
         
     input("\nPresiona ENTER para volver al menú principal...")
     return
+def define_event_prices(organizerId):
+
+    print("\n" + "="*55)
+    print("            DEFINIR PRECIOS POR SECTOR".center(55))
+    print("="*55)
+
+    myEvents = service.get_events_by_organizer_service(organizerId)
+
+    if not myEvents:
+        print("\n[INFO] Todavía no tenés eventos publicados.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+
+    layout_helpers.events_board(myEvents)
+
+    eventId = input("\nIngrese el ID del evento: ").strip()
+
+    event = service.get_organizer_event_by_id_service(organizerId, eventId)
+
+    if event is None:
+        print("\n[ERROR] El evento no existe o no pertenece a tu usuario.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+
+    prices = {}
+
+    for sectorName, sectorData in event["sectors"].items():
+
+        currentPrice = sectorData["price"]
+
+        print(f"\nSector: {sectorName}")
+
+        if currentPrice is None:
+            print("Precio actual: sin definir")
+        else:
+            print(f"Precio actual: ${currentPrice}")
+
+        while True:
+            priceStr = input("Ingrese el nuevo precio: ").strip()
+
+            if not priceStr.isdigit():
+                print("[ERROR] El precio debe ser un número entero.")
+                continue
+
+            price = int(priceStr)
+
+            if price <= 0:
+                print("[ERROR] El precio debe ser mayor a cero.")
+                continue
+
+            prices[sectorName] = price
+            break
+
+    try:
+        updatedEvent = service.update_event_prices_service(
+            organizerId,
+            eventId,
+            prices
+        )
+
+        print("\nPrecios actualizados correctamente.")
+
+        for sectorName, sectorData in updatedEvent["sectors"].items():
+            print(f"- {sectorName}: ${sectorData['price']}")
+
+    except ValueError as e:
+        print(f"\n[ERROR] {e}")
+
+    input("\nPresiona ENTER para volver al menú...")

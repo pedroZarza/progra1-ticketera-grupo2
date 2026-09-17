@@ -1,5 +1,5 @@
 from utils.messages import show_error
-from handlers.events_handlers import create_event, view_my_events, search_event_by_name, search_event_by_category,edit_event
+from handlers.events_handlers import create_event, view_my_events, search_event_by_name, search_event_by_category, edit_event, define_event_prices
 
 def show_organizer_menu(user):
     while True:
@@ -11,9 +11,10 @@ def show_organizer_menu(user):
         print("2. Ver mis eventos publicados")
         print("3. Buscar evento por nombre")
         print("4. Buscar evento por categoria")
-        print("5. Modificar evento")
-        print("6. Asignar categoría a un evento")
-        print("7. Ver estado de ventas y disponibilidad de un evento")
+        print("5. Definir precios por sector")
+        print("6. Modificar evento")
+        print("7. Asignar categoría a un evento")
+        print("8. Ver estado de ventas y disponibilidad de un evento")
         print("0. Cerrar sesión")    
         # print("6. Cancelar evento")
         # print("7. Posponer evento")
@@ -39,11 +40,11 @@ def show_organizer_menu(user):
             case "5":
                 edit_event(user["id"])
             case "6":
-                pass  # event_handler.cancel_event()
+                define_event_prices(user["id"])
             case "7":
-                pass  # event_handler.postpone_event()
+                pass  # asignar categoría
             case "8":
-                pass  # event_handler.toggle_ticket_sales()
+                pass  # ver estado de ventas
             case "9":
                 pass  # event_handler.view_sales_status()
             case "10":
