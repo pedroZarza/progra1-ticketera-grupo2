@@ -38,9 +38,9 @@ def show_organizer_menu(user):
             case "4":
                 search_event_by_category(user["id"])
             case "5":
-                edit_event(user["id"])
+                define_event_prices(user["id"])                              
             case "6":
-                define_event_prices(user["id"])
+                edit_event(user["id"])
             case "7":
                 pass  # asignar categoría
             case "8":
