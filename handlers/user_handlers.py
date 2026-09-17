@@ -1,4 +1,3 @@
-import uuid  # <-- NUEVA IMPORTACIÓN
 from utils import input_helpers
 from services import user_service as service
 from utils.messages import show_error, show_success, show_info, show_warning
@@ -9,7 +8,7 @@ def login():
         username = input_helpers.prompt_non_empty_field("\nIngrese su nombre de usuario: ")
         if username.lower() == "q": return
         password = input_helpers.prompt_non_empty_field("Ingrese su contraseña: ")
-        if username.lower() == "q": return
+        if password.lower() == "q": return
         success, user = service.authenticate_user(username, password)
         if success:
             show_success(f"Sesión iniciada exitosamente! Usuario: {user['username']}")
@@ -37,8 +36,7 @@ def register_user():
             passwordCheck = input("Ingrese nuevamente la contraseña: ")
             if passwordCheck.lower() == "q": return
             
-        newUser = {
-            "id": str(uuid.uuid4()), 
+        newUser = {  
             "username": username, 
             "password": password, 
             "role": role

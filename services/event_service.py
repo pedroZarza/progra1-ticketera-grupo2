@@ -1,12 +1,35 @@
-import uuid
 from datetime import datetime
 from data.events_data import events
 from data.venues_data import venues 
 from data.categories_data import categories 
 
+
+
 def read_all_events():
     events.sort(key=lambda event: event["datetime"])
     return events
+
+def read_active_events():
+    activeEvents = list(filter(lambda event: event["status"] == "active" and has_availability(event),events))
+    activeEvents.sort(key=lambda event: event["datetime"])
+    return activeEvents
+
+def has_availability(event):
+    for sector in event["sectors"].values():
+        if "capacity" in sector and sector["sold"] < sector["capacity"]:
+            return True
+
+        if "seats" in sector:
+            for row in sector["seats"]:
+                if "free" in row:
+                    return True
+    return False
+
+def get_event_by_id(event_id):
+    for event in events:
+        if str(event["id"]) == event_id:
+            return event
+    return None
 
 def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, description):
     
@@ -77,9 +100,14 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
                 "price": None,
                 "seats": seats
             }
-
+            
+    if len(events) > 0:
+        eventId = events[-1] + 1 
+    else:
+        eventId = 1       
+        
     newEvent = {
-        "id": str(uuid.uuid4()), 
+        "id": eventId,
         "organizerId": organizerId,
         "name": name,
         "datetime": isoDatetime, 

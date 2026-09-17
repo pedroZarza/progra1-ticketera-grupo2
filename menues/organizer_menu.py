@@ -1,5 +1,5 @@
 from utils.messages import show_error
-from handlers.events_handlers import create_event, view_my_events, search_event_by_name, search_event_by_category, define_event_prices, view_sales_status, edit_event, assign_category_to_event
+from handlers.event_handlers import create_event, view_my_events, search_event_by_name, search_event_by_category, define_event_prices, view_sales_status, edit_event, assign_category_to_event
 
 def show_organizer_menu(user):
     while True:
