@@ -30,7 +30,7 @@ def show_admin_menu(user):
         
         match option:
             case "1":
-                pass  # venue_handler.create_venue()
+               venue_handlers.create_venue()
             case "2":
                 category_handlers.create_category()
             case "3":
@@ -44,7 +44,7 @@ def show_admin_menu(user):
             case "7":
                 venue_handlers.delete_venue()
             case "8":
-                pass  # user_handler.manage_users()
+                venue_handlers.show_venue_statistics()
             case "9":
                 pass  # event_handler.manage_events()
             case "10":
