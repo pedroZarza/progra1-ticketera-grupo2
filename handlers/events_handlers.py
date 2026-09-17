@@ -260,6 +260,53 @@ def define_event_prices(organizerId):
 
     input("\nPresiona ENTER para volver al menú...")
 
+def view_sales_status(organizerId):
+
+    print("\n" + "="*55)
+    print("       ESTADO DE VENTAS Y DISPONIBILIDAD".center(55))
+    print("="*55)
+
+    myEvents = service.get_events_by_organizer_service(organizerId)
+
+    if not myEvents:
+        print("\n[INFO] Todavía no tenés eventos publicados.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+
+    layout_helpers.events_board(myEvents)
+
+    eventId = input("\nIngrese el ID del evento que desea consultar: ").strip()
+
+    try:
+        stats = service.get_event_sales_status_service(
+            organizerId,
+            eventId
+        )
+
+        event = stats["event"]
+
+        print("\n" + "="*55)
+        print(f"EVENTO: {event['name']}")
+        print("="*55)
+
+        for sector in stats["sectors"]:
+            print(f"\nSector: {sector['name']}")
+            print(f"Capacidad: {sector['capacity']}")
+            print(f"Vendidos: {sector['sold']}")
+            print(f"Disponibles: {sector['available']}")
+            print(f"Ocupación: {sector['occupancy']:.1f}%")
+
+        print("\n" + "-"*55)
+        print("RESUMEN TOTAL")
+        print(f"Capacidad total: {stats['totalCapacity']}")
+        print(f"Entradas vendidas: {stats['totalSold']}")
+        print(f"Entradas disponibles: {stats['totalAvailable']}")
+        print(f"Ocupación total: {stats['totalOccupancy']:.1f}%")
+
+    except ValueError as e:
+        print(f"\n[ERROR] {e}")
+
+    input("\nPresiona ENTER para volver al menú...")
 def assign_category_to_event(organizerId):
     
     print("\n" + "="*55)
