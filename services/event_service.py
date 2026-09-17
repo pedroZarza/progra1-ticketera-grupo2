@@ -162,3 +162,75 @@ def update_event_prices_service(organizerId, eventId, prices):
         event["sectors"][sectorName]["price"] = price
 
     return event
+
+def get_event_sales_status_service(organizerId, eventId):
+
+    event = get_organizer_event_by_id_service(organizerId, eventId)
+
+    if event is None:
+        raise ValueError("El evento no existe o no pertenece al organizador.")
+
+    if "sectors" not in event:
+        raise ValueError("El evento no tiene sectores configurados.")
+
+    sectorStats = []
+
+    totalCapacity = 0
+    totalSold = 0
+    totalAvailable = 0
+
+    for sectorName, sectorData in event["sectors"].items():
+
+        if "capacity" in sectorData:
+            capacity = sectorData["capacity"]
+            sold = sectorData["sold"]
+            available = capacity - sold
+
+        elif "seats" in sectorData:
+            capacity = 0
+            available = 0
+
+            for row in sectorData["seats"]:
+                for seat in row:
+                    capacity += 1
+
+                    if seat == "free":
+                        available += 1
+
+            sold = capacity - available
+
+        else:
+            capacity = 0
+            sold = 0
+            available = 0
+
+        if capacity > 0:
+            occupancy = (sold * 100) / capacity
+        else:
+            occupancy = 0
+
+        sectorStats.append({
+            "name": sectorName,
+            "capacity": capacity,
+            "sold": sold,
+            "available": available,
+            "occupancy": occupancy
+        })
+
+        totalCapacity += capacity
+        totalSold += sold
+        totalAvailable += available
+
+    if totalCapacity > 0:
+        totalOccupancy = (totalSold * 100) / totalCapacity
+    else:
+        totalOccupancy = 0
+
+    return {
+        "event": event,
+        "sectors": sectorStats,
+        "totalCapacity": totalCapacity,
+        "totalSold": totalSold,
+        "totalAvailable": totalAvailable,
+        "totalOccupancy": totalOccupancy
+    }
