@@ -89,7 +89,7 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
         "venue": venue.get("name", f"Venue {venue['id']}"), 
         "description": description,
         "state": "active",
-        "sectorPrices": {sectorName: None for sectorName in venue.get("sectors", {}).keys()}
+        "sectors": eventSectors
     }
     
     events.append(newEvent)
@@ -133,3 +133,32 @@ def search_organizer_events_by_category_service(category_term, organizerId):
             found_events.append(event)
             
     return found_events
+def get_organizer_event_by_id_service(organizerId, eventId):
+    for event in events:
+        same_organizer = str(event.get("organizerId")) == str(organizerId)
+        same_event = str(event.get("id"))[:8] == str(eventId)
+
+        if same_organizer and same_event:
+            return event
+
+    return None
+def update_event_prices_service(organizerId, eventId, prices):
+    event = get_organizer_event_by_id_service(organizerId, eventId)
+
+    if event is None:
+        raise ValueError("El evento no existe o no pertenece al organizador.")
+
+    if "sectors" not in event:
+        raise ValueError("El evento no tiene sectores configurados.")
+
+    for sectorName, price in prices.items():
+
+        if sectorName not in event["sectors"]:
+            raise ValueError(f"El sector {sectorName} no existe.")
+
+        if price <= 0:
+            raise ValueError("El precio debe ser mayor a cero.")
+
+        event["sectors"][sectorName]["price"] = price
+
+    return event
