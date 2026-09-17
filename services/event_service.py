@@ -115,10 +115,7 @@ def search_organizer_events_by_name_service(search_term, organizerId):
     return found_events
 
 def search_organizer_events_by_category_service(category_term, organizerId):
-    """
-    Busca eventos de un organizador que contengan el término ingresado 
-    dentro de su lista de categorías o categoría singular (ignorando tildes y mayúsculas).
-    """
+    
     my_events = get_events_by_organizer_service(organizerId)
     term = category_term.lower().strip()
     
@@ -133,6 +130,40 @@ def search_organizer_events_by_category_service(category_term, organizerId):
             found_events.append(event)
             
     return found_events
+
+def update_event_service(organizerId, eventId, name=None, description=None, category=None):
+    my_events = get_events_by_organizer_service(organizerId)
+    matching_events = [
+        e for e in my_events 
+        if str(e.get("id")) == str(eventId) or str(e.get("id")).startswith(str(eventId))
+    ]
+    
+    if not matching_events:
+        raise ValueError("El evento no existe o no tenés permisos para modificarlo.")
+        
+    if len(matching_events) > 1:
+        raise ValueError("Se encontraron múltiples eventos con ese prefijo de ID. Por favor, ingrese más caracteres para ser específico.")
+        
+    event = matching_events[0]
+        
+    if name:
+        if not all(char.isalnum() or char.isspace() for char in name):
+            raise ValueError("El nombre del evento no puede contener caracteres especiales.")
+        event["name"] = name
+        
+    if description:
+        if not all(char.isalnum() or char.isspace() for char in description):
+            raise ValueError("La descripción no puede contener caracteres especiales.")
+        event["description"] = description
+        
+    if category:
+        matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
+        if not matchedCategory:
+            raise ValueError(f"Categoría inexistente. Opciones válidas: {', '.join(categories)}")
+        event["category"] = matchedCategory
+        event["categories"] = [matchedCategory]
+    return event
+        
 def get_organizer_event_by_id_service(organizerId, eventId):
     for event in events:
         same_organizer = str(event.get("organizerId")) == str(organizerId)
