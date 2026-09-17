@@ -124,6 +124,72 @@ def search_event_by_category(organizerId):
         
     input("\nPresiona ENTER para volver al menú principal...")
     return
+
+def edit_event(organizerId):
+    print("\n" + "="*55)
+    print("                 MODIFICAR EVENTO".center(55))
+    print("="*55)
+    
+    myEvents = service.get_events_by_organizer_service(organizerId)
+    if not myEvents:
+        print("\n[INFO] No tenés ningún evento publicado para modificar.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+        
+    layout_helpers.events_board(myEvents)
+    
+    eventId = input("\nIngrese el ID (o los primeros caracteres) del evento a modificar: ").strip()
+    if not eventId:
+        print("\n[ADVERTENCIA] Operación cancelada.")
+        input("\nPresiona ENTER para volver...")
+        return
+        
+    matching_events = [
+        e for e in myEvents 
+        if str(e.get("id")) == str(eventId) or str(e.get("id")).startswith(str(eventId))
+    ]
+    
+    if not matching_events:
+        print("\n[ERROR] No se encontró ningún evento tuyo con ese ID.")
+        input("\nPresiona ENTER para volver...")
+        return
+        
+    if len(matching_events) > 1:
+        print("\n[ERROR] Hay varios eventos que coinciden con ese prefijo de ID.")
+        print("Por favor, ingrese más caracteres del ID para identificarlo inequívocamente.")
+        input("\nPresiona ENTER para volver...")
+        return
+        
+    target_event = matching_events[0]
+    
+    print(f"\n[INFO] Modificando: '{target_event['name']}'")
+    print("Deje el campo en blanco y presione ENTER si no desea modificarlo.\n")
+    
+    new_name = input(f"Nuevo nombre [{target_event['name']}]: ").strip()
+    new_desc = input(f"Nueva descripción [{target_event.get('description', '')}]: ").strip()
+    
+    availableCategories = ", ".join(categories)
+    current_cat = target_event.get('category', '')
+    new_cat = input(f"Nueva categoría ({availableCategories}) [{current_cat}]: ").strip()
+    
+    try:
+        service.update_event_service(
+            organizerId=organizerId,
+            eventId=target_event["id"],
+            name=new_name if new_name else None,
+            description=new_desc if new_desc else None,
+            category=new_cat if new_cat else None
+        )
+        print("\n" + "-"*45)
+        print("¡El evento fue modificado exitosamente!")
+        print("-" * 45)
+    except ValueError as e:
+        print(f"\n[ADVERTENCIA] {e}")
+    except Exception as e:
+        print(f"\n[ERROR CRÍTICO] Ocurrió un error inesperado: {e}")
+        
+    input("\nPresiona ENTER para volver al menú principal...")
+    return
 def define_event_prices(organizerId):
 
     print("\n" + "="*55)
@@ -241,3 +307,64 @@ def view_sales_status(organizerId):
         print(f"\n[ERROR] {e}")
 
     input("\nPresiona ENTER para volver al menú...")
+def assign_category_to_event(organizerId):
+    
+    print("\n" + "="*55)
+    print("           ASIGNAR CATEGORÍA A UN EVENTO".center(55))
+    print("="*55)
+    
+    myEvents = service.get_events_by_organizer_service(organizerId)
+    if not myEvents:
+        print("\n[INFO] No tenés ningún evento publicado para asignarle categorías.")
+        input("\nPresiona ENTER para volver al menú...")
+        return
+        
+    layout_helpers.events_board(myEvents)
+    
+    eventId = input("\nIngrese el ID (o los primeros caracteres) del evento: ").strip()
+    if not eventId:
+        print("\n[ADVERTENCIA] Operación cancelada.")
+        input("\nPresiona ENTER para volver...")
+        return
+        
+    matching_events = [
+        e for e in myEvents 
+        if str(e.get("id")) == str(eventId) or str(e.get("id")).startswith(str(eventId))
+    ]
+    
+    if not matching_events:
+        print("\n[ERROR] No se encontró ningún evento tuyo con ese ID.")
+        input("\nPresiona ENTER para volver...")
+        return
+        
+    if len(matching_events) > 1:
+        print("\n[ERROR] Hay varios eventos que coinciden con ese prefijo de ID.")
+        print("Por favor, ingrese más caracteres del ID para identificarlo inequívocamente.")
+        input("\nPresiona ENTER para volver...")
+        return
+        
+    target_event = matching_events[0]
+    
+    print(f"\n[INFO] Evento seleccionado: '{target_event['name']}'")
+    print(f"Categoría actual: {target_event.get('category', 'Ninguna')}")
+    
+    availableCategories = ", ".join(categories)
+    print(f"\nCategorías disponibles: [{availableCategories}]")
+    new_cat = input("Ingrese la nueva categoría para el evento: ").strip()
+    
+    try:
+        service.assign_category_service(
+            organizerId=organizerId,
+            eventId=target_event["id"],
+            category=new_cat
+        )
+        print("\n" + "-"*45)
+        print("¡Categoría asignada exitosamente!")
+        print("-" * 45)
+    except ValueError as e:
+        print(f"\n[ADVERTENCIA] {e}")
+    except Exception as e:
+        print(f"\n[ERROR CRÍTICO] Ocurrió un error inesperado: {e}")
+        
+    input("\nPresiona ENTER para volver al menú principal...")
+    return
