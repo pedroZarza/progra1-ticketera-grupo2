@@ -51,6 +51,33 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
     if not matchedCategory:
         raise ValueError(f"Categoría inexistente. Opciones válidas: {', '.join(categories)}")
 
+    eventSectors = {}
+
+    for sectorName, sectorData in venue["sectors"].items():
+
+        if sectorData["type"] == "general":
+            eventSectors[sectorName] = {
+                "price": None,
+                "capacity": sectorData["capacity"],
+                "sold": 0
+            }
+
+        elif sectorData["type"] == "numbered":
+            seats = []
+
+            for row in range(sectorData["rows"]):
+                seatRow = []
+
+                for column in range(sectorData["columns"]):
+                    seatRow.append("free")
+
+                seats.append(seatRow)
+
+            eventSectors[sectorName] = {
+                "price": None,
+                "seats": seats
+            }
+
     newEvent = {
         "id": str(uuid.uuid4()), 
         "organizerId": organizerId,
