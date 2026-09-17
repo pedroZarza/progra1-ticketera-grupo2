@@ -1,4 +1,6 @@
 from utils.messages import show_error
+from handlers import category_handlers
+from handlers import venue_handlers
 
 def show_admin_menu(user):
     while True:
@@ -10,6 +12,7 @@ def show_admin_menu(user):
         print("2. Dar de alta nueva categoría de evento")
         print("3. Consultar venues del sistema")
         print("4. Editar un venue")
+        print("5. Eliminar categoría de evento")
         print("6. Inactivar venue")
         print("7. Eliminar venue")
         print("8. Consultar estadísticas por venue")
@@ -27,21 +30,21 @@ def show_admin_menu(user):
         
         match option:
             case "1":
-                pass  # venue_handler.create_venue()
+               venue_handlers.create_venue()
             case "2":
-                pass  # venue_handler.manage_venues()
+                category_handlers.create_category()
             case "3":
-                pass  # venue_handler.manage_sectors()
+                venue_handlers.show_venues()
             case "4":
-                pass  # event_handler.manage_categories()
+                venue_handlers.edit_venue()
             case "5":
-                pass  # venue_handler.view_calendar()
+                 category_handlers.delete_category()
             case "6":
-                pass  # venue_handler.view_statistics()
+               venue_handlers.deactivate_venue()
             case "7":
-                pass  # user_handler.create_user()
+                venue_handlers.delete_venue()
             case "8":
-                pass  # user_handler.manage_users()
+                venue_handlers.show_venue_statistics()
             case "9":
                 pass  # event_handler.manage_events()
             case "10":
