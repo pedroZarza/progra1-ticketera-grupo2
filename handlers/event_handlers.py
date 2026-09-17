@@ -1,12 +1,48 @@
 from services import event_service as service
 from utils import layout_helpers
 from data.categories_data import categories 
+from utils import input_helpers
+from utils.messages import show_error, show_info, show_success
+from datetime import datetime
 
 def show_events():
     events = service.read_all_events()
     layout_helpers.events_board(events)
     input("\nPresiona ENTER para volver al menú principal...")
     return
+
+def show_event_detail():
+    events = service.read_active_events()
+    layout_helpers.events_board(events)
+    eventId = input_helpers.prompt_non_empty_field(
+        "\nIngrese el ID del evento que desea ver: "
+    )
+
+    if eventId.lower() == "q":
+        return
+
+    event = service.get_event_by_id(eventId)
+    if event is None:
+        show_error("No existe un evento con ese ID.")
+        return
+
+    eventDatetime = datetime.fromisoformat(event["datetime"])
+    formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
+
+    print(f"\n[{str(event['id'])[:8]}] {event['name']}") 
+    print("-"*40)
+    print(f"Fecha y hora: {formattedDatetime}")
+    print(f"Venue: {event['venue']}")
+    print(f"Categorías: {', '.join(event['categories'])}")
+    print(f"Organizador: {event['organizer']}")
+    print(f"Descripción: {event['description']}")
+    print("\nSectores:")
+    for sector_name, sector in event["sectors"].items():
+        print(f"- {sector_name}: ${sector['price']}")
+    input("\nPresiona ENTER para volver al menú principal...")
+    return
+    
+
 
 def create_event(organizerId):
    

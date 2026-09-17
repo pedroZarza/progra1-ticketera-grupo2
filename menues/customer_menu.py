@@ -1,4 +1,5 @@
 from utils.messages import show_error
+from handlers import event_handlers, venue_handlers, order_handlers
 
 def show_customer_menu(user):
     while True:
@@ -6,12 +7,12 @@ def show_customer_menu(user):
         print("EVENTPASS".center(58))
         print(f"Bienvenido/a {user['username']}".center(58))
         print("\n==========================================================")
-        print("1. Ver cartelera de eventos")
-        print("3. Ver detalle de un evento")
-        print("3. Buscar evento por nombre")
-        print("4. Buscar eventos por categoria")
-        print("5. Comprar entradas (elegir sector o butaca)")
-        print("6. Ver mis órdenes de compra")
+        print("1. Ver cartelera de eventos activos")
+        print("2. Ver detalle de un evento")
+        print("3. Comprar entradas")
+        print("4. Ver mis entradas")
+        #print("3. Buscar evento por nombre")
+        #print("4. Buscar eventos por categoria")
         # print("7. Cancelar una orden de compra")
         # print("8. Ver eventos recomendados")
         # print("0. Cerrar sesión")
@@ -23,13 +24,13 @@ def show_customer_menu(user):
         
         match option:
             case "1":
-                pass  # event_handler.view_events()
+                event_handlers.show_events()
             case "2":
-                pass  # event_handler.search_events()
+                event_handlers.show_event_detail()
             case "3":
-                pass  # event_handler.view_event_detail()
+                order_handlers.buy_tickets(user)
             case "4":
-                pass  # event_handler.view_featured_events()
+                order_handlers.show_user_orders(user)
             case "5":
                 pass  # event_handler.buy_tickets()
             case "6":
