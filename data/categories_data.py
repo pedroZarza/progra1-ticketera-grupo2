@@ -1,1 +1,12 @@
-categories = ["Musica", "Teatro", "Deportes", "Stand Up"]
+categories = [
+    "Musica",
+    "Teatro",
+    "Deportes",
+    "Stand Up",
+    "Música en vivo",
+    "Rock",
+    "Indie",
+    "Comedia",
+    "Tecnología",
+    "Conferencia"
+]

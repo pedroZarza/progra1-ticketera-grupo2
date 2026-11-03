@@ -43,9 +43,12 @@ events = [
             "Platea": {
                 "price": 18000,
                 "seats": [
-                    ["occupied", "free", "free"],
-                    ["occupied", "occupied", "free"]
-                ]
+                    ["free", "free", "occupied", "free", "free", "free", "free", "free"],
+                    ["free", "occupied", "free", "free", "free", "free", "free", "free"],
+                    ["free", "free", "free", "free", "free", "free", "free", "free"],
+                    ["free", "free", "free", "free", "free", "free", "free", "free"],
+                    ["free", "free", "free", "free", "free", "free", "free", "free"]
+                    ]
             }
         }
     },
