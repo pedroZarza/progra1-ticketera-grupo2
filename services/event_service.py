@@ -67,7 +67,7 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
             if existing_dt == eventDate:
                 is_same_time = True
                 
-        if is_same_venue and is_same_time and event.get("state") != "canceled":
+        if is_same_venue and is_same_time and event.get("status") != "canceled":
             raise ValueError("El venue ya tiene un evento programado para esa misma fecha y horario.")
 
     matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
@@ -110,13 +110,12 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
         "id": eventId,
         "organizerId": organizerId,
         "name": name,
-        "datetime": isoDatetime, 
-        "category": matchedCategory, 
+        "datetime": isoDatetime,
         "categories": [matchedCategory],
-        "venueId": venue["id"], 
-        "venue": venue.get("name", f"Venue {venue['id']}"), 
+        "venueId": venue["id"],
+        "venue": venue["name"],
         "description": description,
-        "state": "active",
+        "status": "active",
         "sectors": eventSectors
     }
     
@@ -148,15 +147,15 @@ def search_organizer_events_by_category_service(category_term, organizerId):
     term = category_term.lower().strip()
     
     found_events = []
+    
     for event in my_events:
         event_categories = [str(c).lower() for c in event.get("categories", [])]
-        singular_category = str(event.get("category", "")).lower()
+
         match_in_list = any(term in cat for cat in event_categories)
-        match_in_singular = term in singular_category
-        
-        if match_in_list or match_in_singular:
+
+        if match_in_list:
             found_events.append(event)
-            
+                    
     return found_events
 
 def update_event_service(organizerId, eventId, name=None, description=None, category=None):
@@ -201,7 +200,6 @@ def update_event_service(organizerId, eventId, name=None, description=None, cate
         event["description"] = validated_desc
         
     if validated_cat is not None:
-        event["category"] = validated_cat
         event["categories"] = [validated_cat]
         
     return event
@@ -331,7 +329,6 @@ def assign_category_service(organizerId, eventId, category):
     if not matchedCategory:
         raise ValueError(f"Categoría inexistente. Opciones válidas: {', '.join(categories)}")
         
-    event["category"] = matchedCategory
     event["categories"] = [matchedCategory]
     
     return event

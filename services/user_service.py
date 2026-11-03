@@ -18,3 +18,9 @@ def create_user(newUserData):
     users_data.users.append(newUserData)
     print(users_data.users)
     return True, newUserData
+def get_user_by_id(user_id):
+    for user in users_data.users:
+        if str(user["id"]) == str(user_id):
+            return user
+
+    return None
