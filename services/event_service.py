@@ -101,10 +101,10 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
                 "seats": seats
             }
             
-    if len(events) > 0:
-        eventId = events[-1]["id"] + 1 
+    if len(events) == 0:
+        eventId = 1
     else:
-        eventId = 1       
+        eventId = max(event["id"] for event in events) + 1       
         
     newEvent = {
         "id": eventId,
