@@ -4,6 +4,7 @@ from data.categories_data import categories
 from utils import input_helpers
 from utils.messages import show_error, show_info, show_success
 from datetime import datetime
+from services import user_service
 
 def show_events():
     events = service.read_all_events()
@@ -34,7 +35,13 @@ def show_event_detail():
     print(f"Fecha y hora: {formattedDatetime}")
     print(f"Venue: {event['venue']}")
     print(f"Categorías: {', '.join(event['categories'])}")
-    print(f"Organizador: {event['organizer']}")
+    organizer = user_service.get_user_by_id(event["organizerId"])
+
+    if organizer is not None:
+        print(f"Organizador: {organizer['username']}")
+    else:
+        print("Organizador: No disponible")
+    
     print(f"Descripción: {event['description']}")
     print("\nSectores:")
     for sector_name, sector in event["sectors"].items():
@@ -205,7 +212,9 @@ def edit_event(organizerId):
     new_desc = input(f"Nueva descripción [{target_event.get('description', '')}]: ").strip()
     
     availableCategories = ", ".join(categories)
-    current_cat = target_event.get('category', '')
+    current_cat = ""
+    if len(target_event.get("categories", [])) > 0:
+        current_cat = target_event["categories"][0]
     new_cat = input(f"Nueva categoría ({availableCategories}) [{current_cat}]: ").strip()
     
     try:
@@ -382,7 +391,10 @@ def assign_category_to_event(organizerId):
     target_event = matching_events[0]
     
     print(f"\n[INFO] Evento seleccionado: '{target_event['name']}'")
-    print(f"Categoría actual: {target_event.get('category', 'Ninguna')}")
+    if len(target_event.get("categories", [])) > 0:
+        print(f"Categoría actual: {target_event['categories'][0]}")
+    else:
+        print("Categoría actual: Ninguna")
     
     availableCategories = ", ".join(categories)
     print(f"\nCategorías disponibles: [{availableCategories}]")

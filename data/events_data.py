@@ -4,9 +4,10 @@ events = [
         "name": "Noches de Rock",
         "datetime": "2026-10-15T21:00",
         "venue": "Movistar Arena",
+        "venueId": 1,
         "categories": ["Música en vivo", "Rock"],
         "description": "Festival de rock con bandas nacionales invitadas.",
-        "organizer": "juan carlos organizador",
+        "organizerId": 4,
         "status": "active",
         "sectors": {
             "Campo": {
@@ -28,9 +29,10 @@ events = [
         "name": "Festival Indie BA",
         "datetime": "2026-09-28T19:30",
         "venue": "Estadio Obras",
+        "venueId": 2,
         "categories": ["Música en vivo", "Indie"],
         "description": "Festival con artistas emergentes de la escena indie nacional.",
-        "organizer": "jorge",
+        "organizerId": 5,
         "status": "active",
         "sectors": {
             "Campo": {
@@ -52,9 +54,10 @@ events = [
         "name": "Stand Up Night",
         "datetime": "2026-11-08T20:00",
         "venue": "Teatro Gran Rex",
+        "venueId": 3,
         "categories": ["Comedia", "Stand Up"],
         "description": "Noche de stand up con comediantes invitados.",
-        "organizer": "jorge",
+        "organizerId": 5,
         "status": "active",
         "sectors": {
             "Campo": {
@@ -76,9 +79,10 @@ events = [
         "name": "Tech Conference 2026",
         "datetime": "2026-10-03T10:00",
         "venue": "Centro de Convenciones",
+        "venueId": 4,
         "categories": ["Tecnología", "Conferencia"],
         "description": "Conferencia sobre desarrollo de software y nuevas tecnologías.",
-        "organizer": "juan carlos organizador",
+        "organizerId": 4,
         "status": "active",
         "sectors": {
             "General": {
