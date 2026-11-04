@@ -17,10 +17,13 @@ events = [
             },
             "Platea": {
                 "price": 25000,
-                "seats": [
-                    ["free", "free", "occupied"],
-                    ["free", "occupied", "free"]
-                ]
+                       "seats": [
+                    ["free", "free", "occupied", "free", "free", "free", "free", "free"],
+                    ["free", "occupied", "free", "free", "free", "free", "free", "free"],
+                    ["free", "free", "free", "free", "free", "free", "free", "free"],
+                    ["free", "free", "free", "free", "free", "free", "free", "free"],
+                    ["free", "free", "free", "free", "free", "free", "free", "free"]
+                    ]
             }
         }
     },
@@ -43,12 +46,9 @@ events = [
             "Platea": {
                 "price": 18000,
                 "seats": [
-                    ["free", "free", "occupied", "free", "free", "free", "free", "free"],
-                    ["free", "occupied", "free", "free", "free", "free", "free", "free"],
-                    ["free", "free", "free", "free", "free", "free", "free", "free"],
-                    ["free", "free", "free", "free", "free", "free", "free", "free"],
-                    ["free", "free", "free", "free", "free", "free", "free", "free"]
-                    ]
+                    ["occupied", "free", "free"],
+                    ["occupied", "occupied", "free"]
+                ]
             }
         }
     },
