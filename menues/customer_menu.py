@@ -13,6 +13,8 @@ def show_customer_menu(user):
         print("4. Ver mis entradas")
         #print("3. Buscar evento por nombre")
         #print("4. Buscar eventos por categoria")
+        print("5. Buscar evento por nombre")
+        print("6. Filtrar eventos por categoria")
         # print("7. Cancelar una orden de compra")
         # print("8. Ver eventos recomendados")
         # print("0. Cerrar sesión")
@@ -32,9 +34,9 @@ def show_customer_menu(user):
             case "4":
                 order_handlers.show_user_orders(user)
             case "5":
-                pass  # event_handler.buy_tickets()
+                event_handlers.search_active_event_by_name()
             case "6":
-                pass  # event_handler.view_my_orders()
+                event_handlers.search_active_event_by_category()
             case "7":
                 pass  # event_handler.cancel_order()
             case "8":
