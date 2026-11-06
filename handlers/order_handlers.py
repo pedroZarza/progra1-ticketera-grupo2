@@ -50,6 +50,10 @@ def buy_tickets(user):
     if "capacity" in sector:
         available = sector["capacity"] - sector["sold"]
 
+        if available <= 0:
+            show_error("El sector está agotado.")
+            return
+
         print(f"\nEntradas disponibles: {available}")
 
         while True:
@@ -73,6 +77,10 @@ def buy_tickets(user):
                 if sector["seats"][i][j] == "free":
                     available_seats.append([i, j])
 
+        if len(available_seats) == 0:
+            show_error("No hay butacas disponibles en este sector.")
+            return
+        
         print("\nBUTACAS DISPONIBLES")
 
         for i in range(len(available_seats)):
@@ -140,12 +148,23 @@ def buy_tickets(user):
         "total": total,
         "status": "active",
     }   
+    availability_updated = event_service.update_event_availability_service(
+    event["id"],
+    selected_sector,
+    quantity,
+    selected_seats
+    )
+
+    if availability_updated == False:
+        show_error("No se pudo actualizar la disponibilidad.")
+        return
+
     success, order = order_service.create_order(newOrderData)
+
     if success:
-        ##aca va función del service de evento que actualice su capacidad
         show_success(f"Compra realizada exitosamente. Orden #{order['id']}")
 
-            
+                
 def show_user_orders(user):
     orders = order_service.get_orders_by_customer(user["id"])
 
