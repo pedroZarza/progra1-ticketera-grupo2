@@ -7,7 +7,7 @@ from datetime import datetime
 from services import user_service
 
 def show_events():
-    events = service.read_all_events()
+    events = service.read_active_events()
     layout_helpers.events_board(events)
     input("\nPresiona ENTER para volver al menú principal...")
     return
@@ -49,6 +49,38 @@ def show_event_detail():
     input("\nPresiona ENTER para volver al menú principal...")
     return
     
+def search_active_event_by_name():
+    search_term = input("Ingrese el nombre del evento a buscar: ").strip()
+
+    if search_term == "":
+        show_error("Debe ingresar un nombre.")
+        return
+
+    results = service.search_active_events_by_name_service(search_term)
+
+    if len(results) == 0:
+        show_info("No se encontraron eventos.")
+    else:
+        layout_helpers.events_board(results)
+
+    input("\nPresiona ENTER para volver al menú principal...")
+
+
+def search_active_event_by_category():
+    category_term = input("Ingrese la categoría a buscar: ").strip()
+
+    if category_term == "":
+        show_error("Debe ingresar una categoría.")
+        return
+
+    results = service.search_active_events_by_category_service(category_term)
+
+    if len(results) == 0:
+        show_info("No se encontraron eventos.")
+    else:
+        layout_helpers.events_board(results)
+
+    input("\nPresiona ENTER para volver al menú principal...")
 
 
 def create_event(organizerId):

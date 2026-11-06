@@ -10,7 +10,15 @@ def read_all_events():
     return events
 
 def read_active_events():
-    activeEvents = list(filter(lambda event: event["status"] == "active" and has_availability(event),events))
+    activeEvents = []
+    currentDate = datetime.now()
+
+    for event in events:
+        eventDate = datetime.fromisoformat(event["datetime"])
+
+        if event["status"] == "active" and eventDate > currentDate and has_availability(event):
+            activeEvents.append(event)
+
     activeEvents.sort(key=lambda event: event["datetime"])
     return activeEvents
 
@@ -367,3 +375,29 @@ def update_event_availability_service(event_id, sector_name, quantity, selected_
             sector["seats"][row][column] = "occupied"
 
     return True
+
+def search_active_events_by_name_service(search_term):
+    active_events = read_active_events()
+    found_events = []
+
+    term = search_term.lower().strip()
+
+    for event in active_events:
+        if term in event["name"].lower():
+            found_events.append(event)
+
+    return found_events
+
+
+def search_active_events_by_category_service(category_term):
+    active_events = read_active_events()
+    found_events = []
+
+    term = category_term.lower().strip()
+
+    for event in active_events:
+        for category in event["categories"]:
+            if category.lower() == term:
+                found_events.append(event)
+
+    return found_events
