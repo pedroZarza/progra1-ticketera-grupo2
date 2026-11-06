@@ -332,3 +332,38 @@ def assign_category_service(organizerId, eventId, category):
     event["categories"] = [matchedCategory]
     
     return event
+
+def update_event_availability_service(event_id, sector_name, quantity, selected_seats):
+    event = get_event_by_id(str(event_id))
+
+    if event is None:
+        return False
+
+    if sector_name not in event["sectors"]:
+        return False
+
+    sector = event["sectors"][sector_name]
+
+    if "capacity" in sector:
+        available = sector["capacity"] - sector["sold"]
+
+        if quantity > available:
+            return False
+
+        sector["sold"] += quantity
+
+    elif "seats" in sector:
+        for seat in selected_seats:
+            row = seat[0]
+            column = seat[1]
+
+            if sector["seats"][row][column] != "free":
+                return False
+
+        for seat in selected_seats:
+            row = seat[0]
+            column = seat[1]
+
+            sector["seats"][row][column] = "occupied"
+
+    return True
