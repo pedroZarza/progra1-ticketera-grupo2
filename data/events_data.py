@@ -2,7 +2,7 @@ events = [
     {
         "id": 1,
         "name": "Noches de Rock",
-        "datetime": "2026-10-15T21:00",
+        "datetime": "2026-10-15T21:30",
         "venue": "Movistar Arena",
         "venueId": 1,
         "categories": ["Música en vivo", "Rock"],
