@@ -83,6 +83,7 @@ def create_venue():
         return
 
     time_slots = []
+    time_slots_set = set()
     amount = input_helpers.prompt_positive_number("Cantidad de horarios: ")
 
     for i in range(amount):
@@ -101,8 +102,9 @@ def create_venue():
                     hour = int(parts[0])
                     minute = int(parts[1])
 
-                    if 0 <= hour <= 23 and 0 <= minute <= 59 and time_slot not in time_slots:
+                    if 0 <= hour <= 23 and 0 <= minute <= 59 and time_slot not in time_slots_set:
                         time_slots.append(time_slot)
+                        time_slots_set.add(time_slot)
                         break
 
             show_error("Ingrese un horario válido y no repetido (HH:MM).")
