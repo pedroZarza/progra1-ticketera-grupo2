@@ -14,8 +14,8 @@ def buy_tickets(user):
     event_id = input_helpers.prompt_non_empty_field("\nIngrese el ID del evento: ")
     if event_id.lower() == "q": return
 
-    event = event_service.get_event_by_id(event_id)
-
+    event = event_service.get_active_event_by_id(event_id)
+    
     if event is None:
         show_error("No existe un evento con ese ID.")
         return

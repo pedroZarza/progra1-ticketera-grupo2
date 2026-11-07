@@ -14,7 +14,13 @@ def show_events():
 
 def show_event_detail():
     events = service.read_active_events()
+
+    if len(events) == 0:
+        show_info("No hay eventos disponibles.")
+        return    
+
     layout_helpers.events_board(events)
+
     eventId = input_helpers.prompt_non_empty_field(
         "\nIngrese el ID del evento que desea ver: "
     )
@@ -22,7 +28,7 @@ def show_event_detail():
     if eventId.lower() == "q":
         return
 
-    event = service.get_event_by_id(eventId)
+    event = service.get_active_event_by_id(eventId)
     if event is None:
         show_error("No existe un evento con ese ID.")
         return
