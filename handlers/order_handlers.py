@@ -147,6 +147,7 @@ def buy_tickets(user):
         "seats": selected_seats,
         "total": total,
         "status": "active",
+        "purchase_date": datetime.now().strftime("%d/%m/%Y %H:%M")
     }   
     availability_updated = event_service.update_event_availability_service(
     event["id"],
@@ -175,16 +176,19 @@ def show_user_orders(user):
     print("\n=====MIS TICKETS=====")
 
     for order in orders:
+        event = event_service.get_event_by_id(str(order["event_id"]))
+        
         print(f"\nOrden #{order['id']}")
-        print(f"Evento: {order['event_id']}")
+        print(f"Evento: {event['name']}")
         print(f"Sector: {order['sector']}")
         print(f"Cantidad de tickets: {order['quantity']}")
+        print(f"Fecha de compra: {order['purchase_date']}")
 
         if len(order["seats"]) > 0:
             print("Butacas:")
 
             for seat in order["seats"]:
-                print(f"- Fila {seat[0]} - Butaca {seat[1]}")
+                print(f"- Fila {seat[0] + 1} - Butaca {seat[1] + 1}")
 
         print(f"Total: ${order['total']}")
         print(f"Estado: {order['status']}")
