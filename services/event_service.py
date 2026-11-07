@@ -39,6 +39,15 @@ def get_event_by_id(event_id):
             return event
     return None
 
+def get_active_event_by_id(event_id):
+    active_events = read_active_events()
+
+    for event in active_events:
+        if str(event["id"]) == str(event_id):
+            return event
+
+    return None
+
 def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, description):
     
     if not all(char.isalnum() or char.isspace() for char in name):
