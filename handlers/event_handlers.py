@@ -49,9 +49,24 @@ def show_event_detail():
         print("Organizador: No disponible")
     
     print(f"Descripción: {event['description']}")
+
     print("\nSectores:")
+
     for sector_name, sector in event["sectors"].items():
-        print(f"- {sector_name}: ${sector['price']}")
+
+        if "capacity" in sector:
+            available = sector["capacity"] - sector["sold"]
+
+        elif "seats" in sector:
+            available = 0
+
+            for row in sector["seats"]:
+                for seat in row:    
+                    if seat == "free":
+                        available += 1
+
+        print(f"- {sector_name}: ${sector['price']} - Disponibles: {available}")
+
     input("\nPresiona ENTER para volver al menú principal...")
     return
     
