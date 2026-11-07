@@ -41,10 +41,45 @@ def has_availability(event):
     return False
 
 def get_event_by_id(event_id):
-    for event in events:
-        if str(event["id"]) == event_id:
-            return event
-    return None
+    try:
+        target_id = int(event_id)
+    except (ValueError, TypeError):
+        return None
+
+    ordered_events = events.copy()
+    ordered_events.sort(key=lambda event: event["id"])
+
+    return binary_search_event_by_id(
+        ordered_events,
+        target_id,
+        0,
+        len(ordered_events) - 1
+    )
+
+def binary_search_event_by_id(events_list, event_id, start, end):
+    if start > end:
+        return None
+
+    middle = (start + end) // 2
+    middle_event = events_list[middle]
+
+    if middle_event["id"] == event_id:
+        return middle_event
+
+    if event_id < middle_event["id"]:
+        return binary_search_event_by_id(
+            events_list,
+            event_id,
+            start,
+            middle - 1
+        )
+
+    return binary_search_event_by_id(
+        events_list,
+        event_id,
+        middle + 1,
+        end
+    )
 
 def get_active_event_by_id(event_id):
     active_events = read_active_events()
