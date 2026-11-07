@@ -2,7 +2,7 @@ from datetime import datetime
 from data.events_data import events
 from data.venues_data import venues 
 from data.categories_data import categories 
-
+from functools import reduce
 
 
 def read_all_events():
@@ -149,8 +149,12 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
 
 def get_events_by_organizer_service(organizerId):
     
-    organizerEvents = [event for event in events if str(event.get("organizerId")) == str(organizerId)]
-    organizerEvents.sort(key=lambda e: e.get("datetime", ""))
+    organizerEvents = list(filter(
+        lambda event: str(event.get("organizerId")) == str(organizerId),
+        events
+    ))
+
+    organizerEvents.sort(key=lambda event: event.get("datetime", ""))
     
     return organizerEvents
 
@@ -166,20 +170,26 @@ def search_organizer_events_by_name_service(search_term, organizerId):
     return found_events
 
 def search_organizer_events_by_category_service(category_term, organizerId):
-    
     my_events = get_events_by_organizer_service(organizerId)
     term = category_term.lower().strip()
-    
-    found_events = []
-    
-    for event in my_events:
-        event_categories = [str(c).lower() for c in event.get("categories", [])]
 
-        match_in_list = any(term in cat for cat in event_categories)
+    found_events = []
+
+    for event in my_events:
+        event_categories = list(map(
+            lambda category: str(category).lower(),
+            event.get("categories", [])
+        ))
+
+        match_in_list = False
+
+        for category in event_categories:
+            if term in category:
+                match_in_list = True
 
         if match_in_list:
             found_events.append(event)
-                    
+
     return found_events
 
 def update_event_service(organizerId, eventId, name=None, description=None, category=None):
@@ -282,15 +292,17 @@ def get_event_sales_status_service(organizerId, eventId):
             available = capacity - sold
 
         elif "seats" in sectorData:
-            capacity = 0
-            available = 0
+            capacity = reduce(
+                lambda total, row: total + len(row),
+                sectorData["seats"],
+                0
+            )
 
-            for row in sectorData["seats"]:
-                for seat in row:
-                    capacity += 1
-
-                    if seat == "free":
-                        available += 1
+            available = reduce(
+                lambda total, row: total + row.count("free"),
+                sectorData["seats"],
+                0
+            )
 
             sold = capacity - available
 
