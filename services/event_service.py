@@ -16,11 +16,18 @@ def read_active_events():
     for event in events:
         eventDate = datetime.fromisoformat(event["datetime"])
 
-        if event["status"] == "active" and eventDate > currentDate and has_availability(event):
+        if event["status"] == "active" and eventDate > currentDate and has_availability(event) and has_defined_prices(event):
             activeEvents.append(event)
 
     activeEvents.sort(key=lambda event: event["datetime"])
     return activeEvents
+
+def has_defined_prices(event):
+    for sector in event["sectors"].values():
+        if sector["price"] is None:
+            return False
+
+    return True
 
 def has_availability(event):
     for sector in event["sectors"].values():
