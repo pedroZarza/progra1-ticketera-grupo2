@@ -60,8 +60,9 @@ def create_sectors():
             }
 
         else:
-            rows = input_helpers.prompt_positive_number("Ingrese la cantidad de asientos por fila: ")
-            columns = input_helpers.prompt_positive_number("Ingrese la cantidad de filas de asientos del sector: ")
+            rows = input_helpers.prompt_positive_number("Ingrese la cantidad de filas de asientos del sector: ")
+
+            columns = input_helpers.prompt_positive_number("Ingrese la cantidad de asientos por fila: ")
 
             sectors[name] = {
                 "type": "numbered",

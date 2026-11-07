@@ -102,6 +102,9 @@ def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, d
     if not venue:
         raise ValueError("El venue seleccionado no existe.")
 
+    if venue["active"] == False:
+        raise ValueError("El venue seleccionado está desactivado.")
+
     try:
         eventDate = datetime.strptime(datetimeStr, "%d/%m/%Y %H:%M")
         if eventDate < datetime.now():
