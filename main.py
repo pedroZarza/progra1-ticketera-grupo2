@@ -3,9 +3,11 @@ from menues.organizer_menu import show_organizer_menu
 from menues.customer_menu import show_customer_menu
 from menues.admin_menu import show_admin_menu
 from utils.messages import show_error
-
+from services import order_service
 
 def main():  
+    order_service.restore_orders_availability() 
+
     while True:
         print("\n==========================================================")
         print("                        EVENTPASS")

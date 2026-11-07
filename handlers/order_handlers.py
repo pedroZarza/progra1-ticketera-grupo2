@@ -142,6 +142,8 @@ def buy_tickets(user):
     newOrderData = {
         "customer_id": user["id"],
         "event_id": event["id"],
+        "event_name": event["name"],
+        "event_datetime": event["datetime"],
         "sector": selected_sector,
         "quantity": quantity,
         "seats": selected_seats,
@@ -176,10 +178,9 @@ def show_user_orders(user):
     print("\n=====MIS TICKETS=====")
 
     for order in orders:
-        event = event_service.get_event_by_id(str(order["event_id"]))
-        
+
         print(f"\nOrden #{order['id']}")
-        print(f"Evento: {event['name']}")
+        print(f"Evento: {order['event_name']}")
         print(f"Sector: {order['sector']}")
         print(f"Cantidad de tickets: {order['quantity']}")
         print(f"Fecha de compra: {order['purchase_date']}")

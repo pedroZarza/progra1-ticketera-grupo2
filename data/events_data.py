@@ -2,7 +2,7 @@ events = [
     {
         "id": 1,
         "name": "Noches de Rock",
-        "datetime": "2026-10-15T21:30",
+        "datetime": "2026-12-15T21:30",
         "venue": "Movistar Arena",
         "venueId": 1,
         "categories": ["Música en vivo", "Rock"],
@@ -30,7 +30,7 @@ events = [
     {
         "id": 2,
         "name": "Festival Indie BA",
-        "datetime": "2026-09-28T19:30",
+        "datetime": "2026-12-28T19:30",
         "venue": "Estadio Obras",
         "venueId": 2,
         "categories": ["Música en vivo", "Indie"],
@@ -55,7 +55,7 @@ events = [
     {
         "id": 3,
         "name": "Stand Up Night",
-        "datetime": "2026-11-08T20:00",
+        "datetime": "2026-12-08T20:00",
         "venue": "Teatro Gran Rex",
         "venueId": 3,
         "categories": ["Comedia", "Stand Up"],
