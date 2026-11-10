@@ -9,12 +9,13 @@ def login():
         if username.lower() == "q": return
         password = input_helpers.prompt_non_empty_field("Ingrese su contraseña: ")
         if password.lower() == "q": return
-        success, user = service.authenticate_user(username, password)
-        if success:
+        try:
+            user = service.authenticate_user(username, password)
             show_success(f"Sesión iniciada exitosamente! Usuario: {user['username']}")
             return user
-        show_error(f"Credenciales Incorrectas. Intentos restantes: { 3 - attempts}")
-        attempts += 1
+        except ValueError as error:
+            show_error(f"{error}. Intentos restantes: { 3 - attempts}")
+            attempts += 1
     show_info("No posee más intentos.")
     input("\nPresiona ENTER para volver al menú principal...")
     return
@@ -35,19 +36,17 @@ def register_user():
             show_error("Las contraseñas no coinciden")
             passwordCheck = input("Ingrese nuevamente la contraseña: ")
             if passwordCheck.lower() == "q": return
-            
         newUser = {  
             "username": username, 
             "password": password, 
             "role": role
         }
-        
-        success, user = service.create_user(newUser)
-        if success:
+        try: 
+            user = service.create_user(newUser)
             show_success(f'Usuario {user["username"]} registrado exitosamente!')
             operationSuccess = True
-        else:
-            show_error("El nombre de usuario ya está registrado. Inicie sesión con su cuenta.")
+        except ValueError as error:
+            show_error(f"{error}")
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
-            if response == "q": return
+            if response.lower() == "q": return
     return user

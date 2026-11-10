@@ -55,44 +55,48 @@ def create_venue(name, address, time_slots, sectors):
     venues_data.venues.append(new_venue)
     return True
 
-def get_venue_statistics(venue_name):
-    total_occupancy = 0
-    total_events = 0
-    finished_events = 0
-    upcoming_events = 0
 
-    for event in events_data.events:
-        if event["venue"] == venue_name:
-            total_events += 1
 
-            event_date = datetime.fromisoformat(event["datetime"])
 
-            if event_date < datetime.now():
-                finished_events += 1
-            else:
-                upcoming_events += 1
 
-            capacity = 0
-            sold = 0
+# def get_venue_statistics(venue_name):
+#     total_occupancy = 0
+#     total_events = 0
+#     finished_events = 0
+#     upcoming_events = 0
 
-            for sector in event["sectors"].values():
-                if "capacity" in sector:
-                    capacity += sector["capacity"]
-                    sold += sector["sold"]
-                else:
-                    for row in sector["seats"]:
-                        for seat in row:
-                            capacity += 1
+#     for event in events_data.events:
+#         if event["venue"] == venue_name:
+#             total_events += 1
 
-                            if seat == "occupied":
-                                sold += 1
+#             event_date = datetime.fromisoformat(event["datetime"])
 
-            if capacity > 0:
-                total_occupancy += sold * 100 / capacity
+#             if event_date < datetime.now():
+#                 finished_events += 1
+#             else:
+#                 upcoming_events += 1
 
-    average_occupancy = 0
+#             capacity = 0
+#             sold = 0
 
-    if total_events > 0:
-        average_occupancy = total_occupancy / total_events
+#             for sector in event["sectors"].values():
+#                 if "capacity" in sector:
+#                     capacity += sector["capacity"]
+#                     sold += sector["sold"]
+#                 else:
+#                     for row in sector["seats"]:
+#                         for seat in row:
+#                             capacity += 1
 
-    return average_occupancy, finished_events, upcoming_events
+#                             if seat == "occupied":
+#                                 sold += 1
+
+#             if capacity > 0:
+#                 total_occupancy += sold * 100 / capacity
+
+#     average_occupancy = 0
+
+#     if total_events > 0:
+#         average_occupancy = total_occupancy / total_events
+
+#     return average_occupancy, finished_events, upcoming_events

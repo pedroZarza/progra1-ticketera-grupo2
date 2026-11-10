@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from utils.messages import show_info, show_error, show_success, show_warning
 
 
@@ -93,3 +92,39 @@ def event_detail(event):
     print(f"Lugares disponibles: {total_event_available}")
     print(f"Lugares ocupados: {total_event_sold}")
     print(f"Ocupación total: {total_occupancy:.1f}%")
+    
+    
+    
+def event_detail(event, organizer):
+    eventDatetime = datetime.fromisoformat(event["datetime"])
+    formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
+
+    print(f"\n[{str(event['id'])[:8]}] {event['name']}")
+    print("-" * 40)
+    print(f"Fecha y hora: {formattedDatetime}")
+    print(f"Venue: {event['venue']}")
+    print(f"Categorías: {', '.join(event['categories'])}")
+
+    if organizer is not None:
+        print(f"Organizador: {organizer['username']}")
+    else:
+        print("Organizador: No disponible")
+
+    print(f"Descripción: {event['description']}")
+
+    print("\nSectores:")
+
+    for sector_name, sector in event["sectors"].items():
+
+        if "capacity" in sector:
+            available = sector["capacity"] - sector["sold"]
+
+        elif "seats" in sector:
+            available = 0
+
+            for row in sector["seats"]:
+                for seat in row:
+                    if seat == "free":
+                        available += 1
+
+        print(f"- {sector_name}: ${sector['price']} - Disponibles: {available}")
