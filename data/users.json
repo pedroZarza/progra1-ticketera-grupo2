@@ -1,8 +1,8 @@
 [
     {
         "id": 1,
-        "username": "admin1",
-        "password": "admin123",
+        "username": "ADMIN",
+        "password": "5b40171489659251097e7790fc2f1892e2183a72546fe1df283d07865db9149c",
         "role": "admin"
     },
     {
@@ -46,5 +46,17 @@
         "password": "50efaf6a539b9529971b32b24f6ecd82b6847d3469cc77722eba58dceec4e8d9",
         "role": "customer",
         "id": 8
+    },
+    {
+        "username": "CHABAN",
+        "password": "c3e229de130e18700a7b138f70ba1d0faa797109731a2c539af9241c504b4054",
+        "role": "organizer",
+        "id": 9
+    },
+    {
+        "username": "GUSTAVO",
+        "password": "ead3ba768ef64d9d8da9477d43ce001e081e8864c89edd448198b0bc4a599efc",
+        "role": "customer",
+        "id": 10
     }
 ]

@@ -88,3 +88,25 @@ def prompt_positive_number(message):
         else:
             show_error("Ingrese un número entero mayor que cero, o 'q' para cancelar.")
     return value
+
+
+
+def prompt_time_slot(message):
+    isValid = False
+    while not isValid:
+        timeSlot = input(message).strip()
+        if timeSlot.lower() == "q":
+            return "q"
+
+        parts = timeSlot.split(":")
+
+        if len(parts) == 2 and len(parts[0]) == 2 and len(parts[1]) == 2:
+            if parts[0].isdigit() and parts[1].isdigit():
+                hour = int(parts[0])
+                minute = int(parts[1])
+
+                if 0 <= hour <= 23 and 0 <= minute <= 59:
+                    isValid = True
+        if not isValid:
+            show_error("Ingrese un horario válido (HH:MM).")
+    return timeSlot

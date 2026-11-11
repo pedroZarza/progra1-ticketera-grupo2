@@ -30,7 +30,7 @@ def show_organizer_menu(user):
 
         match option:
             case "1":
-                pass
+                event_handlers.create_event(user)
             case "2":
                 pass
             case "3":

@@ -1,17 +1,20 @@
-from services import event_service, user_service
+from services import event_service, user_service, category_service
 from utils import layout_helpers
 from utils import input_helpers
 from utils.messages import show_error, show_info, show_success
 
 def show_events():
-    events = event_service.read_active_events()
+    events = event_service.get_active_events()
+    if len(events) == 0:
+        show_info("No hay eventos disponibles.")
+        return  
     layout_helpers.events_board(events)
     input("\nPresiona ENTER para volver al menú principal...")
     return
 
 def show_event_detail():
     operationSuccess = False
-    events = event_service.read_active_events()
+    events = event_service.get_active_events()
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
         return    
@@ -32,63 +35,74 @@ def show_event_detail():
     input("\nPresiona ENTER para volver al menú principal...")
     return
 
+def search_events():
+    operationSuccess = False
+    while not operationSuccess:
+        query = input_helpers.prompt_non_empty_field("Búsqueda: ")
+        if query== "q":
+            return
+        results = event_service.get_events_by_search(query)
+        if len(results) == 0:
+            show_info("No se encontraron eventos que coicidan con su búsqueda.")
+        else:
+            layout_helpers.events_board(results)
+        response = input("\nPresiona ENTER para volver a buscar o q para cancelar la operación...")
+        if response.lower() == "q": operationSuccess = True
+    return 
+
+
+def filter_events_by_category():
+    categories = category_service.get_categories()
+    if len(categories) == 0:
+        show_info("No hay categorías disponibles.")
+        return
+    print("\nCategorías disponibles:")
+    for category in categories:
+        print(f"- {category}")
+        
+    operationSuccess = False
+    while not operationSuccess:
+        categoriesQuery = input_helpers.prompt_non_empty_field(
+            "\nIngrese las categorías, separadas por comas (q para cancelar): "
+        )
+        if categoriesQuery.lower() == "q":
+            return
+        selectedCategories = [
+            category.strip().lower()
+            for category in categoriesQuery.split(",")
+            if category.strip() != ""
+        ]
+
+        results = event_service.get_events_by_category(selectedCategories)
+
+        if len(results) == 0:
+            show_info("No se encontraron eventos con las categorías ingresadas.")
+        else:
+            layout_helpers.events_board(results)
+            response = input("\nPresiona ENTER para volver a buscar o q para cancelar la operación...")
+            if response.lower() == "q": operationSuccess = True
+    return
 
 
 
 
 
-# def search_active_event_by_name():
-#     pass
-#     search_term = input("Ingrese el nombre del evento a buscar: ").strip()
-
-#     if search_term == "":
-#         show_error("Debe ingresar un nombre.")
-#         return
-
-#     results = service.search_active_events_by_name_service(search_term)
-
-#     if len(results) == 0:
-#         show_info("No se encontraron eventos.")
-#     else:
-#         layout_helpers.events_board(results)
-
-#     input("\nPresiona ENTER para volver al menú principal...")
-
-
-# def search_active_event_by_category():
-#     pass
-#     category_term = input("Ingrese la categoría a buscar: ").strip()
-
-#     if category_term == "":
-#         show_error("Debe ingresar una categoría.")
-#         return
-
-#     results = service.search_active_events_by_category_service(category_term)
-
-#     if len(results) == 0:
-#         show_info("No se encontraron eventos.")
-#     else:
-#         layout_helpers.events_board(results)
-
-#     input("\nPresiona ENTER para volver al menú principal...")
-
-
-# def create_event(organizerId):
-#     pass
-#     print("\n" + "="*45)
-#     print("           CREAR NUEVO EVENTO")
-#     print("="*45)
+def create_event(organizerId):
+    pass
+    # print("\n" + "="*45)
+    # print("           CREAR NUEVO EVENTO")
+    # print("="*45)
     
-#     name = input("Ingrese el nombre del evento: ").strip()
-#     description = input("Ingrese una breve descripción: ").strip()
+    # name = input("Ingrese el nombre del evento: ").strip()
+    # description = input("Ingrese una breve descripción: ").strip()
     
-#     dateStr = input("Ingrese la fecha (DD/MM/AAAA): ").strip()
-#     timeStr = input("Ingrese la hora (HH:MM): ").strip()
+    # dateStr = input("Ingrese la fecha (DD/MM/AAAA): ").strip()
+    # timeStr = input("Ingrese la hora (HH:MM): ").strip()
     
-#     datetimeStr = f"{dateStr} {timeStr}"
+    # datetimeStr = f"{dateStr} {timeStr}"
 
-#     availableCategories = ", ".join(categories)
-#     category = input(f"Ingrese la categoría ({availableCategories}): ").strip()
+    # availableCategories = ", ".join(categories)
+    # category = input(f"Ingrese la categoría ({availableCategories}): ").strip()
    
 #     venueIdStr = input("Ingrese el ID del Venue (Ej: 1): ").strip()
 
@@ -175,19 +189,19 @@ def show_event_detail():
 #     print("="*55)
     
 #     availableCategories = ", ".join(categories)
-#     category_term = input(f"Ingrese la categoría a buscar ({availableCategories}): ").strip()
+#     category = input(f"Ingrese la categoría a buscar ({availableCategories}): ").strip()
     
-#     if not category_term:
+#     if not category:
 #         print("\n[ADVERTENCIA] No ingresaste ninguna categoría.")
 #         input("\nPresiona ENTER para volver al menú...")
 #         return
         
-#     results = service.search_organizer_events_by_category_service(category_term, organizerId)
+#     results = service.search_organizer_events_by_category_service(category, organizerId)
     
 #     if not results:
-#         print(f"\n[INFO] No tenés eventos registrados en la categoría '{category_term}'.")
+#         print(f"\n[INFO] No tenés eventos registrados en la categoría '{category}'.")
 #     else:
-#         print(f"\n[INFO] Se encontraron {len(results)} evento(s) de {category_term.capitalize()}:")
+#         print(f"\n[INFO] Se encontraron {len(results)} evento(s) de {category.capitalize()}:")
 #         layout_helpers.events_board(results)
         
 #     input("\nPresiona ENTER para volver al menú principal...")

@@ -3,23 +3,39 @@ from datetime import datetime
 from functools import reduce
 
 
-def read_all_events():
-    events = event_repository.load_events()
-    events.sort(key=lambda event: event["datetime"])
-    return events
+# def get_all_events():
+#     events = event_repository.load_events()
+#     events.sort(key=lambda event: event["datetime"])
+#     return events
 
-def read_active_events():
+def get_active_events():
     events = event_repository.load_events()
     activeEvents = []
     currentDate = datetime.now()
 
     for event in events:
         eventDate = datetime.fromisoformat(event["datetime"])
-        if event["status"] == "active" and eventDate > currentDate and has_availability(event):
+        if (
+            event["status"] == "active"
+            and eventDate > currentDate
+        ):
             activeEvents.append(event)
 
     activeEvents.sort(key=lambda event: event["datetime"])
     return activeEvents
+
+
+def get_events_available_for_purchase():
+    events = get_active_events()
+    availableEvents = []
+
+    for event in events:
+        if has_availability(event):
+            availableEvents.append(event)
+
+    return availableEvents
+
+
 
 def has_availability(event):
     for sector in event["sectors"].values():
@@ -32,31 +48,44 @@ def has_availability(event):
                     return True
     return False
 
+
 def get_event_by_id(eventId):
-    activeEvents = read_active_events()
+    activeEvents = get_active_events()
     for event in activeEvents:
         if event["id"] == eventId:
             return event
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
 
+def get_events_by_search(query):
+    events = get_active_events()
+    q = query.lower()
+    matchEvents = list(
+        filter(
+            lambda event: q in event["name"].lower()
+            or q in event["description"].lower()
+            or q in event["venue"].lower()
+            or q in [cat.lower() for cat in event["categories"]],
+            events,
+        )
+    )
+    return matchEvents
 
 
-
-
-
-
-
-
-
-
-
-
+def get_events_by_category(categories):
+    events = get_active_events()
+    matchEvents = []
+    for event in events:
+        for category in event["categories"]:
+            if category.lower() in categories:
+                matchEvents.append(event)
+                break
+    return matchEvents
 
 
 # def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, description):
-    
-    
+
+
 #     if not all(char.isalnum() or char.isspace() for char in name):
 #         raise ValueError("El nombre del evento no puede contener caracteres especiales. Solo se permiten letras, números y espacios.")
 
@@ -74,8 +103,8 @@ def get_event_by_id(eventId):
 #         eventDate = datetime.strptime(datetimeStr, "%d/%m/%Y %H:%M")
 #         if eventDate < datetime.now():
 #             raise ValueError("La fecha del evento no puede ser en el pasado.")
-        
-#         isoDatetime = eventDate.isoformat() 
+
+#         isoDatetime = eventDate.isoformat()
 #     except ValueError as e:
 #         if "does not match format" in str(e):
 #             raise ValueError("Formato de fecha inválido. Utilice DD/MM/AAAA HH:MM.")
@@ -87,13 +116,13 @@ def get_event_by_id(eventId):
 
 #     for event in events:
 #         is_same_venue = str(event.get("venueId")) == str(venue["id"]) or event.get("venue") == venue.get("name")
-        
+
 #         is_same_time = False
 #         if event.get("datetime"):
 #             existing_dt = datetime.fromisoformat(event.get("datetime"))
 #             if existing_dt == eventDate:
 #                 is_same_time = True
-                
+
 #         if is_same_venue and is_same_time and event.get("status") != "canceled":
 #             raise ValueError("El venue ya tiene un evento programado para esa misma fecha y horario.")
 
@@ -127,12 +156,12 @@ def get_event_by_id(eventId):
 #                 "price": None,
 #                 "seats": seats
 #             }
-            
+
 #     if len(events) == 0:
 #         eventId = 1
 #     else:
-#         eventId = max(event["id"] for event in events) + 1       
-        
+#         eventId = max(event["id"] for event in events) + 1
+
 #     newEvent = {
 #         "id": eventId,
 #         "organizerId": organizerId,
@@ -145,31 +174,31 @@ def get_event_by_id(eventId):
 #         "status": "active",
 #         "sectors": eventSectors
 #     }
-    
+
 #     events.append(newEvent)
-    
+
 #     return newEvent
 
 # def get_events_by_organizer_service(organizerId):
-    
+
 #     organizerEvents = list(filter(
 #         lambda event: str(event.get("organizerId")) == str(organizerId),
 #         events
 #     ))
 
 #     organizerEvents.sort(key=lambda event: event.get("datetime", ""))
-    
+
 #     return organizerEvents
 
 # def search_organizer_events_by_name_service(search_term, organizerId):
-    
+
 #     my_events = get_events_by_organizer_service(organizerId)
-    
+
 #     found_events = [
-#         event for event in my_events 
+#         event for event in my_events
 #         if search_term.lower() == event.get("name", "").lower()
 #     ]
-    
+
 #     return found_events
 
 # def search_organizer_events_by_category_service(category_term, organizerId):
@@ -197,33 +226,33 @@ def get_event_by_id(eventId):
 
 # def update_event_service(organizerId, eventId, name=None, description=None, category=None):
 #     my_events = get_events_by_organizer_service(organizerId)
-    
+
 #     matching_events = [
-#         e for e in my_events 
+#         e for e in my_events
 #         if str(e.get("id")) == str(eventId) or str(e.get("id")).startswith(str(eventId))
 #     ]
-    
+
 #     if not matching_events:
 #         raise ValueError("El evento no existe o no tenés permisos para modificarlo.")
-        
+
 #     if len(matching_events) > 1:
 #         raise ValueError("Se encontraron múltiples eventos con ese prefijo de ID. Por favor, ingrese más caracteres para ser específico.")
-        
+
 #     event = matching_events[0]
 #     validated_name = None
 #     validated_desc = None
 #     validated_cat = None
-    
+
 #     if name is not None and name.strip() != "":
 #         if not all(char.isalnum() or char.isspace() for char in name):
 #             raise ValueError("El nombre del evento no puede contener caracteres especiales.")
 #         validated_name = name
-        
+
 #     if description is not None and description.strip() != "":
 #         if not all(char.isalnum() or char.isspace() for char in description):
 #             raise ValueError("La descripción no puede contener caracteres especiales.")
 #         validated_desc = description
-        
+
 #     if category is not None and category.strip() != "":
 #         matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
 #         if not matchedCategory:
@@ -232,15 +261,15 @@ def get_event_by_id(eventId):
 
 #     if validated_name is not None:
 #         event["name"] = validated_name
-        
+
 #     if validated_desc is not None:
 #         event["description"] = validated_desc
-        
+
 #     if validated_cat is not None:
 #         event["categories"] = [validated_cat]
-        
+
 #     return event
-        
+
 # def get_organizer_event_by_id_service(organizerId, eventId):
 #     for event in events:
 #         same_organizer = str(event.get("organizerId")) == str(organizerId)
@@ -345,31 +374,31 @@ def get_event_by_id(eventId):
 #         "totalOccupancy": totalOccupancy
 #     }
 # def assign_category_service(organizerId, eventId, category):
-   
+
 #     my_events = get_events_by_organizer_service(organizerId)
-    
+
 #     matching_events = [
-#         e for e in my_events 
+#         e for e in my_events
 #         if str(e.get("id")) == str(eventId) or str(e.get("id")).startswith(str(eventId))
 #     ]
-    
+
 #     if not matching_events:
 #         raise ValueError("El evento no existe o no tenés permisos para modificarlo.")
-        
+
 #     if len(matching_events) > 1:
 #         raise ValueError("Se encontraron múltiples eventos con ese prefijo de ID. Por favor, ingrese más caracteres para ser específico.")
-        
+
 #     event = matching_events[0]
-    
+
 #     if not category:
 #         raise ValueError("Debe ingresar una categoría válida.")
-        
+
 #     matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
 #     if not matchedCategory:
 #         raise ValueError(f"Categoría inexistente. Opciones válidas: {', '.join(categories)}")
-        
+
 #     event["categories"] = [matchedCategory]
-    
+
 #     return event
 
 # def update_event_availability_service(event_id, sector_name, quantity, selected_seats):
@@ -408,7 +437,7 @@ def get_event_by_id(eventId):
 #     return True
 
 # def search_active_events_by_name_service(search_term):
-#     active_events = read_active_events()
+#     active_events = get_active_events()
 #     found_events = []
 
 #     term = search_term.lower().strip()
@@ -420,15 +449,3 @@ def get_event_by_id(eventId):
 #     return found_events
 
 
-# def search_active_events_by_category_service(category_term):
-#     active_events = read_active_events()
-#     found_events = []
-
-#     term = category_term.lower().strip()
-
-#     for event in active_events:
-#         for category in event["categories"]:
-#             if category.lower() == term:
-#                 found_events.append(event)
-
-#     return found_events

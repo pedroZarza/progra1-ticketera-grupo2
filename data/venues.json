@@ -4,10 +4,20 @@
         "name": "Movistar Arena",
         "address": "Av. Figueroa Alcorta 7597",
         "active": true,
-        "time_slots": ["19:00", "21:30"],
+        "time_slots": [
+            "19:00",
+            "21:30"
+        ],
         "sectors": {
-            "Campo": {"type": "general", "capacity": 200},
-            "Platea": {"type": "numbered", "rows": 5, "columns": 8}
+            "Campo": {
+                "type": "general",
+                "capacity": 200
+            },
+            "Platea": {
+                "type": "numbered",
+                "rows": 5,
+                "columns": 8
+            }
         }
     },
     {
@@ -15,21 +25,39 @@
         "name": "Estadio Obras",
         "address": "Sin especificar",
         "active": true,
-        "time_slots": ["19:30"],
+        "time_slots": [
+            "19:30"
+        ],
         "sectors": {
-            "Campo": {"type": "general", "capacity": 300},
-            "Platea": {"type": "numbered", "rows": 2, "columns": 3}
+            "Campo": {
+                "type": "general",
+                "capacity": 300
+            },
+            "Platea": {
+                "type": "numbered",
+                "rows": 2,
+                "columns": 3
+            }
         }
     },
     {
         "id": 3,
         "name": "Teatro Gran Rex",
         "address": "Sin especificar",
-        "active": true,
-        "time_slots": ["20:00"],
+        "active": false,
+        "time_slots": [
+            "20:00"
+        ],
         "sectors": {
-            "Campo": {"type": "general", "capacity": 100},
-            "Platea": {"type": "numbered", "rows": 2, "columns": 3}
+            "Campo": {
+                "type": "general",
+                "capacity": 100
+            },
+            "Platea": {
+                "type": "numbered",
+                "rows": 2,
+                "columns": 3
+            }
         }
     },
     {
@@ -37,10 +65,57 @@
         "name": "Centro de Convenciones",
         "address": "Sin especificar",
         "active": true,
-        "time_slots": ["10:00"],
+        "time_slots": [
+            "10:00"
+        ],
         "sectors": {
-            "General": {"type": "general", "capacity": 500},
-            "VIP": {"type": "general", "capacity": 50}
+            "General": {
+                "type": "general",
+                "capacity": 500
+            },
+            "VIP": {
+                "type": "general",
+                "capacity": 50
+            }
+        }
+    },
+    {
+        "id": 5,
+        "name": "Complejo C art media",
+        "address": "avenida123",
+        "active": true,
+        "time_slots": [
+            "19:00",
+            "22:00"
+        ],
+        "sectors": {
+            "campo general": {
+                "type": "general",
+                "capacity": 3000
+            },
+            "vip": {
+                "type": "general",
+                "capacity": 50
+            },
+            "campo trasero": {
+                "type": "general",
+                "capacity": 300
+            }
+        }
+    },
+    {
+        "id": 6,
+        "name": "Club Conjura",
+        "address": "paternal 123",
+        "active": true,
+        "time_slots": [
+            "21:00"
+        ],
+        "sectors": {
+            "campo": {
+                "type": "general",
+                "capacity": 900
+            }
         }
     }
 ]

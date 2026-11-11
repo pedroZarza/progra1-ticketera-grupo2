@@ -2,107 +2,81 @@ from datetime import datetime
 from utils.messages import show_info, show_error, show_success, show_warning
 
 
+# def events_board(events):
+#     print("\n==========================================================")
+#     print("                    CARTELERA - EVENTPASS")
+#     print("==========================================================")
+#     if len(events) == 0:
+#         show_info("No hay eventos disponibles en este momento.")
+#         return    
+#     for event in events:
+#         datetimeObj = datetime.fromisoformat(event["datetime"])
+#         date = datetimeObj.strftime("%d-%m-%Y")
+#         time = datetimeObj.strftime("%H:%M")
+        
+#         print(f"\n[{str(event['id'])[:8]}] {event['name']}") 
+#         print(f"    📅 {date} | 🕒 {time} | 📍 {event['venue']} | 🎭 {', '.join(event['categories'])}\n")
+
+
 def events_board(events):
     print("\n==========================================================")
     print("                    CARTELERA - EVENTPASS")
     print("==========================================================")
+
     if len(events) == 0:
         show_info("No hay eventos disponibles en este momento.")
-        return    
+        return
+
     for event in events:
         datetimeObj = datetime.fromisoformat(event["datetime"])
         date = datetimeObj.strftime("%d-%m-%Y")
         time = datetimeObj.strftime("%H:%M")
-        
-        print(f"\n[{str(event['id'])[:8]}] {event['name']}") 
+
+        totalCapacity = 0
+        totalAvailable = 0
+
+        for sector in event["sectors"].values():
+
+            if "capacity" in sector:
+                capacity = sector["capacity"]
+                available = capacity - sector["sold"]
+
+            elif "seats" in sector:
+                capacity = 0
+                available = 0
+
+                for row in sector["seats"]:
+                    for seat in row:
+                        capacity += 1
+
+                        if seat == "free":
+                            available += 1
+            else:
+                capacity = 0
+                available = 0
+
+            totalCapacity += capacity
+            totalAvailable += available
+            
+        warning = ""
+        if totalCapacity > 0:
+            if totalAvailable == 0:
+                warning = " | SOLD OUT"
+            elif totalAvailable <= totalCapacity * 0.15:
+                warning = " | ¡ÚLTIMAS ENTRADAS!"
+
+        print(f"\n[{str(event['id'])[:8]}] {event['name']}{warning}")
         print(f"    📅 {date} | 🕒 {time} | 📍 {event['venue']} | 🎭 {', '.join(event['categories'])}\n")
 
 
-def event_detail(event):
-    datetime_obj = datetime.fromisoformat(event["datetime"])
-    date = datetime_obj.strftime("%d-%m-%Y")
-    time = datetime_obj.strftime("%H:%M")
-
-    print("\n==========================================================")
-    print("                    DETALLE DEL EVENTO")
-    print("==========================================================")
-    print(f"Evento: {event['name']}")
-    print(f"Fecha: {date}")
-    print(f"Hora: {time}")
-    print(f"Lugar: {event['venue']}")
-    print(f"Categorías: {', '.join(event['categories'])}")
-    print(f"Descripción: {event['description']}")
-    print("----------------------------------------------------------")
-    print("Sectores y disponibilidad:")
-
-    if len(event["sectors"]) == 0:
-        show_info("El evento todavía no tiene sectores configurados.")
-        return
-
-    total_event_capacity = 0
-    total_event_available = 0
-
-    for sector_name, sector_data in event["sectors"].items():
-        price = sector_data["price"]
-
-        if "capacity" in sector_data:
-            capacity = sector_data["capacity"]
-            sold = sector_data["sold"]
-            available = capacity - sold
-
-        elif "seats" in sector_data:
-            seats = sector_data["seats"]
-            capacity = 0
-            available = 0
-
-            for row in seats:
-                for seat in row:
-                    capacity += 1
-
-                    if seat == "free":
-                        available += 1
-
-            sold = capacity - available
-
-        total_event_capacity += capacity
-        total_event_available += available
-
-        if capacity > 0:
-            occupancy = (sold * 100) / capacity
-        else:   
-            occupancy = 0
-
-        print(f"\nSector: {sector_name}")
-        print(f"Precio: ${price}")
-        print(f"Capacidad total: {capacity}")
-        print(f"Disponibles: {available}")
-        print(f"Ocupados: {sold}")
-        print(f"Ocupación: {occupancy:.1f}%")
-
-    total_event_sold = total_event_capacity - total_event_available
-
-    if total_event_capacity > 0:
-        total_occupancy = (total_event_sold * 100) / total_event_capacity
-    else:
-        total_occupancy = 0
-
-    print("\n----------------------------------------------------------")
-    print("RESUMEN GENERAL DEL EVENTO")
-    print(f"Capacidad total: {total_event_capacity}")
-    print(f"Lugares disponibles: {total_event_available}")
-    print(f"Lugares ocupados: {total_event_sold}")
-    print(f"Ocupación total: {total_occupancy:.1f}%")
-    
-    
-    
 def event_detail(event, organizer):
     eventDatetime = datetime.fromisoformat(event["datetime"])
     formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
 
-    print(f"\n[{str(event['id'])[:8]}] {event['name']}")
-    print("-" * 40)
+    print(f"\n[{event['id']}] {event['name']}")
+    print("-" * 45)
     print(f"Fecha y hora: {formattedDatetime}")
-    print(f"Venue: {event['venue']}")
+    print(f"Lugar: {event['venue']}")
     print(f"Categorías: {', '.join(event['categories'])}")
 
     if organizer is not None:
@@ -110,21 +84,79 @@ def event_detail(event, organizer):
     else:
         print("Organizador: No disponible")
 
-    print(f"Descripción: {event['description']}")
+    print(f"\nDescripción: {event['description']}")
 
-    print("\nSectores:")
+    print("\nSectores y entradas disponibles:")
 
-    for sector_name, sector in event["sectors"].items():
+    if len(event["sectors"]) == 0:
+        show_info("El evento todavía no tiene sectores configurados.")
+        return
+
+    for sectorName, sector in event["sectors"].items():
 
         if "capacity" in sector:
-            available = sector["capacity"] - sector["sold"]
+            capacity = sector["capacity"]
+            available = capacity - sector["sold"]
 
         elif "seats" in sector:
+            capacity = 0
             available = 0
 
             for row in sector["seats"]:
                 for seat in row:
+                    capacity += 1
                     if seat == "free":
                         available += 1
+        else:
+            capacity = 0
+            available = 0
+        warning = ""
+        if capacity > 0:
+            if available == 0:
+                warning = " | SOLD OUT"
+            elif available <= capacity * 0.15:
+                warning = " | ¡ÚLTIMAS ENTRADAS!"
 
-        print(f"- {sector_name}: ${sector['price']} - Disponibles: {available}")
+        print(f"- {sectorName}: ${sector['price']} | Disponibles: {available}{warning}")
+
+    print("-" * 45)
+        
+        
+def venues_board(venues):
+    print("\nVENUES DEL SISTEMA")
+
+    for venue in venues:
+        print(f"\nID: {venue['id']}")
+        print(f"Nombre: {venue['name']}")
+        print(f"Dirección: {venue['address']}")
+        print(f"Estado: {'Activo' if venue['active'] else 'Inactivo'}")
+        print("Sectores:")
+
+        for sector_name in venue["sectors"]:
+            print(f"-{sector_name}")
+            
+def venue_detail(venue):
+    totalCapacity = 0
+    for sector in venue["sectors"].values():
+        if sector["type"] == "general":
+            totalCapacity += sector["capacity"]
+        elif sector["type"] == "numbered":
+            totalCapacity += sector["rows"] * sector["columns"]
+    
+    print(f"\n[{venue['id']}] {venue['name']}")
+    print("-" * 45)
+    print(f"Dirección: {venue['address']}")
+    print(f"Estado: {'Activo' if venue['active'] else 'Inactivo'}")
+    print(f"Capacidad total: {totalCapacity}")
+    
+    print("\nSectores:")
+    for sectorName, sector in venue["sectors"].items():
+
+        if sector["type"] == "general":
+            capacity = sector["capacity"]
+
+        elif sector["type"] == "numbered":
+            capacity = sector["rows"] * sector["columns"]
+
+        print(f"-{sectorName} (Capacidad: {capacity})")
+    print("-" * 45)
