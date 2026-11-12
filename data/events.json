@@ -176,16 +176,16 @@
     },
     {
         "id": 5,
-        "name": "EVENTO",
+        "name": "EVENTAZO",
         "datetime": "2026-12-15T19:00",
         "venue": "Movistar Arena",
         "venueId": 1,
         "categories": [
             "Musica"
         ],
-        "description": "PRUEBA",
+        "description": "evento imperdible",
         "organizerId": 7,
-        "status": "active",
+        "status": "cancelled",
         "sectors": {
             "Campo": {
                 "price": null,
@@ -282,6 +282,37 @@
                         "free"
                     ]
                 ]
+            }
+        }
+    },
+    {
+        "id": 7,
+        "name": "Jonnhy Marr Argentina",
+        "datetime": "2023-11-26T22:00",
+        "venue": "Complejo C art media",
+        "venueId": 5,
+        "categories": [
+            "Rock",
+            "Música en vivo"
+        ],
+        "description": "Un capo",
+        "organizerId": 7,
+        "status": "active",
+        "sectors": {
+            "campo general": {
+                "price": 126000.0,
+                "capacity": 3000,
+                "sold": 0
+            },
+            "vip": {
+                "price": 250000.0,
+                "capacity": 50,
+                "sold": 0
+            },
+            "campo trasero": {
+                "price": 90000.0,
+                "capacity": 300,
+                "sold": 0
             }
         }
     }

@@ -160,3 +160,48 @@ def venue_detail(venue):
 
         print(f"-{sectorName} (Capacidad: {capacity})")
     print("-" * 45)
+
+
+
+def organizer_events_board(events):
+    print("\n==========================================================")
+    print("                  MIS EVENTOS - EVENTPASS")
+    print("==========================================================")
+
+    if len(events) == 0:
+        show_info("No tenés eventos registrados.")
+        return
+
+    for event in events:
+        datetimeObj = datetime.fromisoformat(event["datetime"])
+        date = datetimeObj.strftime("%d-%m-%Y")
+        time = datetimeObj.strftime("%H:%M")
+
+        print(f"\n[{str(event['id'])[:8]}] {event['name']}")
+        print(f"    Fecha: {date} | Hora: {time}")
+        print(f"    Venue: {event['venue']} | Estado: {event['status'].capitalize()}")
+
+    print("\n" + "=" * 58)
+
+
+# def event_sales(event, sales):
+#     eventDatetime = datetime.fromisoformat(event["datetime"])
+#     formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
+
+#     print(f"\n[{event['id']}] {event['name']}")
+#     print("-" * 45)
+#     print(f"Fecha y hora: {formattedDatetime}")
+#     print(f"Lugar: {event['venue']}")
+#     print("\nVentas y disponibilidad:")
+
+#     for sector in sales["sectors"]:
+#         print(
+#             f"- {sector['name']}: vendidas {sector['sold']} | "
+#             f"disponibles {sector['available']} | recaudado ${sector['revenue']}"
+#         )
+
+#     print("-" * 45)
+#     print(f"Total vendidas: {sales['totalSold']}")
+#     print(f"Total disponibles: {sales['totalAvailable']}")
+#     print(f"Recaudación: ${sales['totalRevenue']}")
+#     print("-" * 45)
