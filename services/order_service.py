@@ -183,5 +183,3 @@ def get_active_orders_by_event_id(eventId):
         if storedOrder["event_id"] == eventId and storedOrder["active"]:
             activeOrders.append(storedOrder)
     return activeOrders
-
-    

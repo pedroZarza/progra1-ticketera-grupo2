@@ -1,5 +1,5 @@
 from datetime import datetime
-from utils.messages import show_info, show_error, show_success, show_warning
+from utils.messages import show_info
 
 
 
@@ -121,8 +121,8 @@ def event_detail(event, organizer):
         print(f"- {sectorName}: {formattedPrice} | Disponibles: {available}{warning}")
 
     print("-" * 58)
-        
-        
+
+
 def venues_board(venues):
     """Imprime el listado de venues.
 
@@ -140,7 +140,7 @@ def venues_board(venues):
 
         for sector_name in venue["sectors"]:
             print(f"-{sector_name}")
-            
+
 def venue_detail(venue):
     """Imprime el detalle de un venue y su capacidad.
 
@@ -153,13 +153,13 @@ def venue_detail(venue):
             totalCapacity += sector["capacity"]
         elif sector["type"] == "numbered":
             totalCapacity += sector["rows"] * sector["columns"]
-    
+
     print(f"\n[{venue['id']}] {venue['name']}")
     print("-" * 45)
     print(f"Dirección: {venue['address']}")
     print(f"Estado: {'Activo' if venue['active'] else 'Inactivo'}")
     print(f"Capacidad total: {totalCapacity}")
-    
+
     print("\nSectores:")
     for sectorName, sector in venue["sectors"].items():
 
@@ -302,7 +302,7 @@ def event_orders(event, orders):
         print("----------------------")
         print(f"Total: ${order['total']:.2f}")
         print(f"Estado: {'Activo' if order['active'] else 'CANCELADA'}")
-       
+
 
 
 def count_sold_seats(row, index=0):
@@ -320,7 +320,7 @@ def count_sold_seats(row, index=0):
     if row[index] == "occupied":
         return 1 + count_sold_seats(row, index + 1)
     return count_sold_seats(row, index + 1)
-  
+
 
 def build_event_sales_summary(event):
     """Calcula vendidas, disponibles, recaudación y estado del evento.

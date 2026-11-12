@@ -24,7 +24,7 @@ def save_sales_report(event):
         str(summary["total_capacity"]),
         str(f"${summary['revenue']:.2f}"),
     ])
-    generated_at = f"\nReport timestamp: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}"
+    generated_at = f"\nGenerado: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
     lines = [generated_at, header]
     for sector in summary["sectors"]:
         lines.append(" | ".join([

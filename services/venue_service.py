@@ -1,5 +1,4 @@
 from repositories import event_repository, venue_repository
-from datetime import datetime
 
 
 def get_all_venues():
@@ -29,8 +28,8 @@ def get_deactive_venues():
     """
     venues = venue_repository.load_venues()
     deactiveVenues = [venue for venue in venues if not venue["active"]]
-    return deactiveVenues       
-        
+    return deactiveVenues
+
 
 
 def get_venue_by_id(venueId):
@@ -291,7 +290,7 @@ def activate_venue(venueId):
             venue["active"] = True
             venue_repository.save_venues(venues)
             return venue
-    raise LookupError(f"No existe un venue con ID: {venueId}")  
+    raise LookupError(f"No existe un venue con ID: {venueId}")
 
 
 def delete_venue(venueId):
@@ -317,50 +316,3 @@ def delete_venue(venueId):
             return venue
 
     raise LookupError(f"No existe un venue con ID: {venueId}")
-
-
-
-
-
-
-# def get_venue_statistics(venue_name):
-#     total_occupancy = 0
-#     total_events = 0
-#     finished_events = 0
-#     upcoming_events = 0
-
-#     for event in events_data.events:
-#         if event["venue"] == venue_name:
-#             total_events += 1
-
-#             event_date = datetime.fromisoformat(event["datetime"])
-
-#             if event_date < datetime.now():
-#                 finished_events += 1
-#             else:
-#                 upcoming_events += 1
-
-#             capacity = 0
-#             sold = 0
-
-#             for sector in event["sectors"].values():
-#                 if "capacity" in sector:
-#                     capacity += sector["capacity"]
-#                     sold += sector["sold"]
-#                 else:
-#                     for row in sector["seats"]:
-#                         for seat in row:
-#                             capacity += 1
-
-#                             if seat == "occupied":
-#                                 sold += 1
-
-#             if capacity > 0:
-#                 total_occupancy += sold * 100 / capacity
-
-#     average_occupancy = 0
-
-#     if total_events > 0:
-#         average_occupancy = total_occupancy / total_events
-
-#     return average_occupancy, finished_events, upcoming_events

@@ -5,7 +5,7 @@ from menues.admin_menu import show_admin_menu
 from utils.messages import show_error
 from utils.error_handler import execute_safely
 
-def main():  
+def main():
 
     while True:
         print("\n==========================================================")
@@ -19,8 +19,8 @@ def main():
         print("\n\n0. Salir")
         print("----------------------------------------------------------")
         option = input(">>> ")
-        
-        
+
+
         if option.lower() in ("0", "x", "exit", "q", "-1"):
             break
         match option:
@@ -37,9 +37,9 @@ def main():
             case _:
                 show_error("Opción incorrecta, elija una opción existente.")
                 input("\nPresiona ENTER para volver al menú...")
-            
-            
-                
+
+
+
 def redirect_by_user_role(user):
     match user["role"]:
         case "admin":

@@ -1,6 +1,6 @@
 from utils import input_helpers
 from services import user_service as service
-from utils.messages import show_error, show_success, show_info, show_warning
+from utils.messages import show_error, show_success, show_info
 
 def login():
     """Autentica al usuario, con hasta tres intentos.
@@ -24,7 +24,7 @@ def login():
     show_info("No posee más intentos.")
     input("\nPresiona ENTER para volver al menú principal...")
     return
-    
+
 def register_user():
     """Registra una cuenta nueva de organizador o comprador.
 
@@ -46,12 +46,12 @@ def register_user():
             show_error("Las contraseñas no coinciden")
             passwordCheck = input("Ingrese nuevamente la contraseña: ")
             if passwordCheck.lower() == "q": return
-        newUser = {  
-            "username": username, 
-            "password": password, 
+        newUser = {
+            "username": username,
+            "password": password,
             "role": role
         }
-        try: 
+        try:
             user = service.create_user(newUser)
             show_success(f'Usuario {user["username"]} registrado exitosamente!')
             operationSuccess = True

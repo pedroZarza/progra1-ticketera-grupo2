@@ -15,7 +15,7 @@ def show_customer_menu(user):
         print("1. Ver cartelera de eventos activos")
         print("2. Ver detalle de un evento")
         print("3. Buscar eventos")
-        print("4. Filtrar eventos por categorias")
+        print("4. Filtrar eventos por categorías")
         print("5. Comprar entradas")
         print("6. Ver mis entradas")
         print("7. Cancelar una orden de compra")
@@ -40,8 +40,6 @@ def show_customer_menu(user):
                 order_handlers.show_user_orders(user)
             case "7":
                 order_handlers.cancel_order(user)
-            case "0":
-                break
             case _:
                 show_error("Opción inválida, elija una opción existente.")
                 input("\nPresiona ENTER para volver al menú...")

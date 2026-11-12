@@ -9,7 +9,7 @@ def get_all_users():
         list: usuarios registrados.
     """
     users = user_repository.load_users()
-    return users    
+    return users
 
 def get_active_users():
     """Devuelve solo los usuarios activos.
@@ -24,7 +24,7 @@ def get_active_users():
             activeUsers.append(user)
     return activeUsers
 
-def get_user_by_id(user_id): #verificar esta función. No deberia servir.
+def get_user_by_id(user_id):
     """Busca un usuario por ID. Devuelve None si no existe.
 
     Parámetros:
@@ -145,5 +145,3 @@ def update_password(userId, newPassword):
             user_repository.save_users(users)
             return user
     raise LookupError(f"No existe un usuario con id '{userId}'")
-
-

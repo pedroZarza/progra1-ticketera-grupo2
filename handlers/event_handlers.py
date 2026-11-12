@@ -1,4 +1,3 @@
-import os
 from services import event_service, user_service, category_service, venue_service
 from utils import layout_helpers
 from utils import input_helpers
@@ -11,7 +10,7 @@ def show_events():
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
         input("\nPresiona ENTER para volver al menú principal...")
-        return  
+        return
     layout_helpers.events_board(events)
     input("\nPresiona ENTER para volver al menú principal...")
     return
@@ -23,7 +22,7 @@ def show_event_detail():
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
         input("\nPresiona ENTER para volver al menú principal...")
-        return    
+        return
     layout_helpers.events_board(events)
     while not operationSuccess:
         eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento que desea ver: ")
@@ -33,7 +32,7 @@ def show_event_detail():
             event = event_service.get_event_by_id(eventId)
             organizer = user_service.get_user_by_id(event["organizerId"])
             layout_helpers.event_detail(event, organizer)
-            operationSuccess = True        
+            operationSuccess = True
         except LookupError as error:
             show_error(error)
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
@@ -55,7 +54,7 @@ def search_events():
             layout_helpers.events_board(results)
         response = input("\nPresiona ENTER para volver a buscar o q para cancelar la operación...")
         if response.lower() == "q": operationSuccess = True
-    return 
+    return
 
 
 def filter_events_by_category():
@@ -68,7 +67,7 @@ def filter_events_by_category():
     print("\nCategorías disponibles:")
     for category in categories:
         print(f"- {category}")
-        
+
     operationSuccess = False
     while not operationSuccess:
         categoriesQuery = input_helpers.prompt_non_empty_field(
@@ -122,7 +121,7 @@ def create_new_event(user):
                 return
             for venue in venues:
                 print(f"[{venue['id']}] {venue['name']}")
-            
+
             venueId = input_helpers.prompt_positive_number("\nSeleccione el venue mediante su id: ")
             if venueId == "q": return
 
@@ -148,7 +147,7 @@ def create_new_event(user):
 
         print("\nCategorías disponibles:")
         if len(categories) == 0:
-            show_info("No hay categorías disponibles.") 
+            show_info("No hay categorías disponibles.")
             input("\nPresiona ENTER para volver al menú principal...")
             return
         for index, category in enumerate(categories, start=1):
@@ -220,7 +219,7 @@ def define_event_prices(eventId, required=False):
                     show_error("Debe definir el precio de todos los sectores.")
                     continue
                 show_info("Operación cancelada. No se guardaron los precios.")
-                input("\nPresiona ENTER para volver al menú principal...")  
+                input("\nPresiona ENTER para volver al menú principal...")
                 return
 
             sectorPrices.append((sectorName, price))
@@ -532,7 +531,7 @@ def view_event_orders(user):
             orders = event_service.get_event_orders(eventId)
             event = event_service.get_event_by_id(eventId)
             layout_helpers.event_orders(event, orders)
-            operationSuccess = True        
+            operationSuccess = True
         except LookupError as error:
             show_error(error)
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
@@ -597,6 +596,3 @@ def generate_sales_report(user):
             if response.lower() == "q":
                 return
     input("\nPresiona ENTER para volver al menú principal...")
-
-
-

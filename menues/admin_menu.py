@@ -19,22 +19,22 @@ def show_admin_menu(user):
         print("5. Eliminar categoría existente")
         print("6. Consultar categorías")
         print("7. Editar información de un venue")
-        print("8. Agregar/eliminar time slots de un venue")
+        print("8. Agregar/eliminar horarios de un venue")
         print("9. Editar configuración de sectores de un venue")
         print("10. Inactivar venue")
         print("11. Activar venue")
         print("12. Eliminar venue")
-        print("13. Dar de alta un usuario (organizador o comprador)")           
+        print("13. Dar de alta un usuario (organizador o comprador)")
         print("14. Inactivar un usuario")
         print("15. Activar un usuario")
         print("16. Restablecer contraseña de un usuario")
-        print("0. Cerrar sesión")  
+        print("0. Cerrar sesión")
         print("----------------------------------------------------------")
         option = input(">>> ")
-        
+
         if option.lower() in ("0", "x", "exit", "q", "-1"):
-            break  
-        
+            break
+
         match option:
             case "1":
                venue_handlers.create_venue()
@@ -68,9 +68,6 @@ def show_admin_menu(user):
                 user_handlers.activate_user()
             case "16":
                 user_handlers.reset_password()
-            case "0":
-                break
             case _:
                 show_error("Opción inválida, elija una opción existente.")
                 input("\nPresiona ENTER para volver al menú...")
-                

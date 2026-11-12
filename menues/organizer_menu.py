@@ -24,10 +24,10 @@ def show_organizer_menu(user):
         print("10. Ver resumen de ventas y disponibilidad de un evento")
         print("11. Ver historial de eventos publicados")
         print("12. Generar reporte de ventas de un evento")
-        print("0. Cerrar sesión")    
+        print("0. Cerrar sesión")
         print("----------------------------------------------------------")
         option = input(">>> ")
-        
+
         if option.lower() in ("0", "x", "exit", "q", "-1"):
             break
 
@@ -56,8 +56,6 @@ def show_organizer_menu(user):
                 event_handlers.view_event_history(user)
             case "12":
                 event_handlers.generate_sales_report(user)
-            case "0":
-                break
             case _:
                 show_error("Opción inválida, elija una opción existente.")
                 input("\nPresiona ENTER para volver al menú...")

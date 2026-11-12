@@ -1,4 +1,4 @@
-from services import venue_service 
+from services import venue_service
 from utils import input_helpers
 from utils.messages import show_info, show_success, show_error
 from utils import layout_helpers
@@ -239,9 +239,9 @@ def edit_venue_time_slots():
             if response.strip().lower() == "q": return
 
     input("\nPresiona ENTER para volver al menú principal...")
-            
-            
-            
+
+
+
 def edit_venue_sectors():
     """Menú para agregar, eliminar o modificar sectores de un venue."""
     venues = venue_service.get_all_venues()
@@ -380,7 +380,7 @@ def remove_venue_sector(venue):
         except (ValueError, LookupError) as error:
             show_error(error)
     input("\nPresiona ENTER para volver al menú principal...")
-    
+
 
 def update_venue_sector(venue):
     """Modifica la capacidad o la grilla de un sector.
@@ -445,10 +445,10 @@ def update_venue_sector(venue):
         except (ValueError, LookupError) as error:
             show_error(error)
     input("\nPresiona ENTER para volver al menú principal...")
-   
-   
-   
-         
+
+
+
+
 def deactivate_venue():
     """Inactiva un venue activo."""
     operationSuccess = False
@@ -483,7 +483,7 @@ def activate_venue():
         return
     layout_helpers.venues_board(venues)
     while not operationSuccess:
-        venueId = input_helpers.prompt_positive_number("\nIngrese el ID del venue que desea activar: ")     
+        venueId = input_helpers.prompt_positive_number("\nIngrese el ID del venue que desea activar: ")
         if venueId == "q": return
         try:
             venue = venue_service.activate_venue(venueId)
@@ -520,28 +520,3 @@ def delete_venue():
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
             if response.strip().lower() == "q": return
     input("\nPresiona ENTER para volver al menú principal...")
-
-
-
-
-# def show_venue_statistics():
-#     show_venues()
-
-#     venue_id = input_helpers.prompt_non_empty_field(
-#         "\nIngrese el ID del venue: "
-#     )
-
-#     if venue_id.lower() == "q":
-#         return
-
-#     for venue in venue_service.get_venues():
-#         if str(venue["id"]) == venue_id:
-#             average, finished, upcoming = venue_service.get_venue_statistics(venue["name"])
-
-#             print(f"\nEstadísticas de {venue['name']}")
-#             print(f"Ocupación promedio: {average:.2f}%")
-#             print(f"Eventos finalizados: {finished}")
-#             print(f"Eventos próximos: {upcoming}")
-#             return
-
-#     show_error("No existe un venue con ese ID.")

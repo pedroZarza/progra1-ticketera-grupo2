@@ -46,4 +46,3 @@ def remove_category(category):
             return existing_category
 
     raise LookupError("La categoría no existe.")
-

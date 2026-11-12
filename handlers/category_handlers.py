@@ -14,7 +14,7 @@ def show_categories():
         print(f"- {category}")
     input("\nPresiona ENTER para volver al menú principal...")
     return
-    
+
 def create_category():
     """Registra una categoría nueva."""
     operationSuccess = False
@@ -32,7 +32,7 @@ def create_category():
             if response.strip().lower() == "q":
                 return
     return
-              
+
 def delete_category():
     """Elimina una categoría por nombre."""
     operationSuccess = False
@@ -52,7 +52,7 @@ def delete_category():
             service.remove_category(category)
             show_success(f"Categoría '{category}' eliminada exitosamente.")
             operationSuccess = True
-            
+
         except LookupError as error:
             show_error(f"{error}")
             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")

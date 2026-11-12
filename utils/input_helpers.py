@@ -52,7 +52,7 @@ def prompt_role_selection():
             case _:
                 show_error("Opción inválida, elija una opción existente.")
     return field
-    
+
 def prompt_username_field(message):
     """Pide un usuario de 4 a 15 caracteres, sin símbolos especiales.
 
@@ -62,7 +62,7 @@ def prompt_username_field(message):
     Retorna:
         str: el usuario ingresado, o 'q' si cancela.
     """
-    field = "" 
+    field = ""
     isValid = False
     pattern = r"^[A-Za-zÑñ0-9_-]+$"
     while not isValid:
@@ -79,7 +79,7 @@ def prompt_username_field(message):
         else:
             isValid = True
     return field
-                   
+
 
 def prompt_password_field(message):
     """Pide una contraseña de al menos 8 caracteres, con mayúscula y número.
@@ -117,7 +117,7 @@ def prompt_positive_number(message):
     while not isValid:
         value = input(message).strip()
 
-        if value.lower() == "q": 
+        if value.lower() == "q":
             isValid = True
             value = "q"
         elif value.isdigit() and int(value) > 0:

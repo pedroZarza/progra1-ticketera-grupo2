@@ -26,23 +26,6 @@ def get_active_events():
     return activeEvents
 
 
-def get_events_available_for_purchase():
-    """Devuelve los eventos activos que todavía tienen entradas.
-
-    Retorna:
-        list: eventos con lugares libres.
-    """
-    events = get_active_events()
-    availableEvents = []
-
-    for event in events:
-        if has_availability(event):
-            availableEvents.append(event)
-
-    return availableEvents
-
-
-
 def has_availability(event):
     """Indica si algún sector del evento tiene lugares libres.
 
@@ -510,5 +493,3 @@ def get_event_orders(eventId):
     if len(orders) == 0:
         raise LookupError(f"El evento con id '{eventId}' no posee órdenes activas.")
     return orders
-
-
