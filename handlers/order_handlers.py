@@ -4,7 +4,7 @@ from utils.messages import show_error, show_success, show_info, show_warning
 from datetime import datetime
 
 def buy_tickets(user):
-    events = event_service.read_active_events()
+    events = event_service.get_active_events()
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
         return

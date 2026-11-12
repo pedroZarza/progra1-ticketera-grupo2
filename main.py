@@ -3,6 +3,7 @@ from menues.organizer_menu import show_organizer_menu
 from menues.customer_menu import show_customer_menu
 from menues.admin_menu import show_admin_menu
 from utils.messages import show_error
+from utils.error_handler import execute_safely
 from services import order_service
 
 def main():  
@@ -47,4 +48,7 @@ def redirect_by_user_role(user):
             show_organizer_menu(user)
         case "customer":
             show_customer_menu(user)
-main()
+
+
+if __name__ == "__main__":
+    execute_safely(main)

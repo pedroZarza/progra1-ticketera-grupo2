@@ -13,17 +13,16 @@ def show_customer_menu(user):
         print("4. Ver mis entradas")
         #print("3. Buscar evento por nombre")
         #print("4. Buscar eventos por categoria")
-        print("5. Buscar evento por nombre")
-        print("6. Filtrar eventos por categoria")
+        print("5. Buscar eventos")
+        print("6. Filtrar eventos por categorias")
         # print("7. Cancelar una orden de compra")
         # print("8. Ver eventos recomendados")
-        # print("0. Cerrar sesión")
+        print("0. Cerrar sesión")
         print("----------------------------------------------------------")
         option = input(">>> ")
         
         if option.lower() in ("0", "x", "exit", "q", "-1"):
             break
-        
         match option:
             case "1":
                 event_handlers.show_events()
@@ -34,9 +33,9 @@ def show_customer_menu(user):
             case "4":
                 order_handlers.show_user_orders(user)
             case "5":
-                event_handlers.search_active_event_by_name()
+                event_handlers.search_events()
             case "6":
-                event_handlers.search_active_event_by_category()
+                event_handlers.filter_events_by_category()
             case "7":
                 pass  # event_handler.cancel_order()
             case "8":

@@ -1,4 +1,4 @@
-categories = [
+[
     "Musica",
     "Teatro",
     "Deportes",
@@ -8,5 +8,6 @@ categories = [
     "Indie",
     "Comedia",
     "Tecnología",
-    "Conferencia"
+    "Conferencia",
+    "POP"
 ]

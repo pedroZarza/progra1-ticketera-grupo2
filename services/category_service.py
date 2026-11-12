@@ -1,21 +1,28 @@
-from data import categories_data
+from repositories import category_repository
 
-
-def add_category(category):
-    for existing_category in categories_data.categories:
-        if existing_category.lower() == category.lower():
-            return False
-
-    categories_data.categories.append(category)
-    return True
-
-def remove_category(category):
-    for existing_category in categories_data.categories:
-        if existing_category.lower() == category.lower():
-            categories_data.categories.remove(existing_category)
-            return True
-
-    return False
 
 def get_categories():
-    return categories_data.categories
+    return category_repository.load_categories()
+
+def add_category(category):
+    categories = category_repository.load_categories()
+
+    for existing_category in categories:
+        if existing_category.lower() == category.lower():
+            raise ValueError("La categoría ya existe.")
+
+    categories.append(category)
+    category_repository.save_categories(categories)
+    return category
+
+
+def remove_category(category):
+    categories = category_repository.load_categories()
+    for existing_category in categories:
+        if existing_category.lower() == category.lower():
+            categories.remove(existing_category)
+            category_repository.save_categories(categories)
+            return existing_category
+
+    raise LookupError("La categoría no existe.")
+
