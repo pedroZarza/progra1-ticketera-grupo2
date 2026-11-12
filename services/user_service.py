@@ -3,10 +3,20 @@ from utils.password_helpers import hash_password, verify_password
 
 
 def get_all_users():
+    """Devuelve todos los usuarios registrados.
+
+    Retorna:
+        list: usuarios registrados.
+    """
     users = user_repository.load_users()
     return users    
 
 def get_active_users():
+    """Devuelve solo los usuarios activos.
+
+    Retorna:
+        list: usuarios con la cuenta activa.
+    """
     users = user_repository.load_users()
     activeUsers = []
     for user in users:
@@ -15,6 +25,14 @@ def get_active_users():
     return activeUsers
 
 def get_user_by_id(user_id): #verificar esta función. No deberia servir.
+    """Busca un usuario por ID. Devuelve None si no existe.
+
+    Parámetros:
+        user_id (int): identificador del usuario.
+
+    Retorna:
+        dict o None: el usuario encontrado, o None si no existe.
+    """
     users = user_repository.load_users()
     for user in users:
         if str(user["id"]) == str(user_id):
@@ -22,6 +40,15 @@ def get_user_by_id(user_id): #verificar esta función. No deberia servir.
     return None
 
 def authenticate_user(username, password):
+    """Valida usuario y contraseña de una cuenta activa.
+
+    Parámetros:
+        username (str): nombre de usuario.
+        password (str): contraseña en texto plano.
+
+    Retorna:
+        dict: el usuario autenticado.
+    """
     users = get_active_users()
     for user in users:
         if user["username"] == username and verify_password(password, user["password"]):
@@ -30,6 +57,14 @@ def authenticate_user(username, password):
 
 
 def create_user(newUserData):
+    """Registra un usuario nuevo con la contraseña hasheada.
+
+    Parámetros:
+        newUserData (dict): username, password y role.
+
+    Retorna:
+        dict: el usuario creado.
+    """
     users = user_repository.load_users()
     if len(users) > 0:
         newId = users[-1]["id"] + 1
@@ -52,6 +87,14 @@ def create_user(newUserData):
 
 
 def deactivate_user(userId):
+    """Marca un usuario como inactivo. No permite inactivar admins.
+
+    Parámetros:
+        userId (int): identificador del usuario.
+
+    Retorna:
+        dict: el usuario inactivado.
+    """
     users = get_all_users()
     for user in users:
         if user["id"] == userId:
@@ -66,6 +109,14 @@ def deactivate_user(userId):
 
 
 def activate_user(userId):
+    """Marca un usuario inactivo como activo.
+
+    Parámetros:
+        userId (int): identificador del usuario.
+
+    Retorna:
+        dict: el usuario activado.
+    """
     users = get_all_users()
     for user in users:
         if user["id"] == userId:
@@ -78,6 +129,15 @@ def activate_user(userId):
 
 
 def update_password(userId, newPassword):
+    """Reemplaza la contraseña de un usuario.
+
+    Parámetros:
+        userId (int): identificador del usuario.
+        newPassword (str): nueva contraseña en texto plano.
+
+    Retorna:
+        dict: el usuario actualizado.
+    """
     users = get_all_users()
     for user in users:
         if user["id"] == userId:

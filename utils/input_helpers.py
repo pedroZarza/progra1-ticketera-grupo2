@@ -4,6 +4,14 @@ from utils.messages import show_error
 
 
 def prompt_non_empty_field(message):
+    """Pide un texto no vacío. 'q' cancela.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        str: el texto ingresado, o 'q' si cancela.
+    """
     field = ""
     isValid = False
     while not isValid:
@@ -16,6 +24,11 @@ def prompt_non_empty_field(message):
     return field
 
 def prompt_role_selection():
+    """Pide si la cuenta es de organizador o de comprador.
+
+    Retorna:
+        str: 'organizer', 'customer' o 'q' si cancela.
+    """
     field = ""
     isValid = False
     while not isValid:
@@ -41,6 +54,14 @@ def prompt_role_selection():
     return field
     
 def prompt_username_field(message):
+    """Pide un usuario de 4 a 15 caracteres, sin símbolos especiales.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        str: el usuario ingresado, o 'q' si cancela.
+    """
     field = "" 
     isValid = False
     pattern = r"^[A-Za-zÑñ0-9_-]+$"
@@ -61,6 +82,14 @@ def prompt_username_field(message):
                    
 
 def prompt_password_field(message):
+    """Pide una contraseña de al menos 8 caracteres, con mayúscula y número.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        str: la contraseña ingresada, o 'q' si cancela.
+    """
     field = ""
     isValid = False
     pattern = r"^(?=.*[A-Z])(?=.*\d).{8,}$"
@@ -74,6 +103,14 @@ def prompt_password_field(message):
     return field
 
 def prompt_positive_number(message):
+    """Pide un entero mayor a cero. 'q' cancela.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        int o str: el número, o 'q' si cancela.
+    """
     value = ""
     isValid = False
 
@@ -93,6 +130,14 @@ def prompt_positive_number(message):
 
 
 def prompt_time_slot(message):
+    """Pide un horario en formato HH:MM.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        str: el horario, o 'q' si cancela.
+    """
     isValid = False
     while not isValid:
         timeSlot = input(message).strip()
@@ -114,6 +159,15 @@ def prompt_time_slot(message):
 
 
 def prompt_list_option(message, options):
+    """Pide una opción de la lista, por número o por texto.
+
+    Parámetros:
+        message (str): texto del pedido.
+        options (list): opciones válidas.
+
+    Retorna:
+        str: la opción elegida, o 'q' si cancela.
+    """
     isValid = False
     while not isValid:
         value = input(message).strip()
@@ -133,6 +187,14 @@ def prompt_list_option(message, options):
 
 
 def prompt_date(message):
+    """Pide una fecha futura en formato DD/MM/AAAA.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        str: la fecha, o 'q' si cancela.
+    """
     isValid = False
     while not isValid:
         date = input(message).strip()
@@ -159,6 +221,14 @@ def prompt_date(message):
 
 
 def prompt_price(message):
+    """Pide un precio mayor a cero.
+
+    Parámetros:
+        message (str): texto del pedido.
+
+    Retorna:
+        float o str: el precio redondeado, o 'q' si cancela.
+    """
     isValid = False
     while not isValid:
         value = input(message).strip()

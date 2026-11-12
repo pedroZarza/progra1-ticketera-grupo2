@@ -1,18 +1,13 @@
 [
     {
         "id": 1,
-        "name": "Movistar Arena",
-        "address": "Av. Figueroa Alcorta 7597",
+        "name": "Teatro Gran Rex",
+        "address": "Av. Corrientes 857, San Nicolás, CABA",
         "active": true,
         "time_slots": [
-            "19:00",
-            "21:30"
+            "20:30"
         ],
         "sectors": {
-            "Campo": {
-                "type": "general",
-                "capacity": 200
-            },
             "Platea": {
                 "type": "numbered",
                 "rows": 5,
@@ -22,99 +17,71 @@
     },
     {
         "id": 2,
-        "name": "Estadio Obras",
-        "address": "Sin especificar",
-        "active": true,
-        "time_slots": [
-            "19:30"
-        ],
-        "sectors": {
-            "Campo": {
-                "type": "general",
-                "capacity": 300
-            },
-            "Platea": {
-                "type": "numbered",
-                "rows": 2,
-                "columns": 3
-            }
-        }
-    },
-    {
-        "id": 3,
-        "name": "Teatro Gran Rex",
-        "address": "Sin especificar",
-        "active": false,
-        "time_slots": [
-            "20:00"
-        ],
-        "sectors": {
-            "Campo": {
-                "type": "general",
-                "capacity": 100
-            },
-            "Platea": {
-                "type": "numbered",
-                "rows": 2,
-                "columns": 3
-            }
-        }
-    },
-    {
-        "id": 4,
-        "name": "Centro de Convenciones",
-        "address": "Sin especificar",
-        "active": true,
-        "time_slots": [
-            "10:00"
-        ],
-        "sectors": {
-            "General": {
-                "type": "general",
-                "capacity": 500
-            },
-            "VIP": {
-                "type": "general",
-                "capacity": 50
-            }
-        }
-    },
-    {
-        "id": 5,
-        "name": "Complejo C art media",
-        "address": "avenida123",
-        "active": true,
-        "time_slots": [
-            "19:00",
-            "22:00"
-        ],
-        "sectors": {
-            "campo general": {
-                "type": "general",
-                "capacity": 3000
-            },
-            "vip": {
-                "type": "general",
-                "capacity": 50
-            },
-            "campo trasero": {
-                "type": "general",
-                "capacity": 300
-            }
-        }
-    },
-    {
-        "id": 6,
-        "name": "Club Conjura",
-        "address": "paternal 123",
+        "name": "La Tangente",
+        "address": "Honduras 5317, Palermo, CABA",
         "active": true,
         "time_slots": [
             "21:00"
         ],
         "sectors": {
-            "campo": {
+            "General": {
                 "type": "general",
-                "capacity": 900
+                "capacity": 200
+            }
+        }
+    },
+    {
+        "id": 3,
+        "name": "Estadio Mâs Monumental",
+        "address": "Av. Figueroa Alcorta 7597, Núñez, CABA",
+        "active": true,
+        "time_slots": [
+            "21:00"
+        ],
+        "sectors": {
+            "Campo": {
+                "type": "general",
+                "capacity": 5000
+            },
+            "Platea": {
+                "type": "numbered",
+                "rows": 2,
+                "columns": 4
+            }
+        }
+    },
+    {
+        "id": 4,
+        "name": "Teatro Picadero",
+        "address": "Pasaje Enrique Santos Discépolo 1857, Balvanera, CABA",
+        "active": true,
+        "time_slots": [
+            "20:00"
+        ],
+        "sectors": {
+            "Platea": {
+                "type": "numbered",
+                "rows": 3,
+                "columns": 4
+            }
+        }
+    },
+    {
+        "id": 5,
+        "name": "Centro de Convenciones Buenos Aires (CEC)",
+        "address": "Av. Figueroa Alcorta 2099, Recoleta, CABA",
+        "active": true,
+        "time_slots": [
+            "09:00"
+        ],
+        "sectors": {
+            "General": {
+                "type": "general",
+                "capacity": 800
+            },
+            "VIP": {
+                "type": "general",
+                "capacity": 100
             }
         }
     }

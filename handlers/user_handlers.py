@@ -3,6 +3,11 @@ from services import user_service as service
 from utils.messages import show_error, show_success, show_info, show_warning
 
 def login():
+    """Autentica al usuario, con hasta tres intentos.
+
+    Retorna:
+        dict o None: el usuario autenticado, o None si cancela o agota los intentos.
+    """
     attempts = 1
     while attempts <= 3:
         username = input_helpers.prompt_non_empty_field("\nIngrese su nombre de usuario: ")
@@ -21,6 +26,11 @@ def login():
     return
     
 def register_user():
+    """Registra una cuenta nueva de organizador o comprador.
+
+    Retorna:
+        dict o None: el usuario creado, o None si cancela el registro.
+    """
     operationSuccess = False
     user = None
     while not operationSuccess:
@@ -53,6 +63,7 @@ def register_user():
 
 
 def deactivate_user():
+    """Inactiva un usuario a partir de su ID."""
     users = service.get_all_users()
     if len(users) == 0:
         show_info("No hay usuarios registrados.")
@@ -82,6 +93,7 @@ def deactivate_user():
 
 
 def activate_user():
+    """Reactiva un usuario a partir de su ID."""
     users = service.get_all_users()
     if len(users) == 0:
         show_info("No hay usuarios registrados.")
@@ -111,6 +123,7 @@ def activate_user():
 
 
 def reset_password():
+    """Restablece la contraseña de un usuario."""
     users = service.get_all_users()
     if len(users) == 0:
         show_info("No hay usuarios registrados.")

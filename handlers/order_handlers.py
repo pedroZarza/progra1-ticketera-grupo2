@@ -2,10 +2,14 @@ from utils import input_helpers, layout_helpers
 from services import event_service, order_service
 from utils.messages import show_error, show_success, show_info
 from datetime import datetime
-from utils import sorting_helpers
 
 
 def buy_tickets(user):
+    """Guía la compra de entradas y registra la orden.
+
+    Parámetros:
+        user (dict): comprador autenticado.
+    """
     events = event_service.get_active_events()
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
@@ -49,10 +53,6 @@ def buy_tickets(user):
             show_error("No existe un sector con ese nombre.")
 
     sector = event["sectors"][selectedSector]
-    if sector.get("price") is None:
-        show_error("El sector seleccionado no tiene precio definido.")
-        return
-
     selectedSeats = []
 
     if "capacity" in sector:
@@ -151,13 +151,22 @@ def buy_tickets(user):
     input("\nPresiona ENTER para volver al menú principal...")
 
 def show_user_orders(user):
+    """Muestra las órdenes de compra del usuario.
+
+    Parámetros:
+        user (dict): comprador autenticado.
+    """
     orders = order_service.get_orders_by_customer(user["id"])
-    orders = sorting_helpers.bubble_sort_by_id(orders)
     layout_helpers.user_orders(orders)
     input("\nPresiona ENTER para volver al menú principal...")
 
 
 def cancel_order(user):
+    """Cancela una orden activa del usuario, previa confirmación.
+
+    Parámetros:
+        user (dict): comprador autenticado.
+    """
     orders = order_service.get_orders_by_customer(user["id"])
     activeOrders = []
     for order in orders:

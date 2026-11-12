@@ -2,6 +2,11 @@ from utils.messages import show_error
 from handlers import event_handlers, order_handlers
 
 def show_customer_menu(user):
+    """Muestra el menú del comprador y ejecuta la opción elegida.
+
+    Parámetros:
+        user (dict): comprador autenticado.
+    """
     while True:
         print("\n==========================================================\n")
         print("EVENTPASS".center(58))

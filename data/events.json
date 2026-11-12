@@ -1,29 +1,23 @@
 [
     {
         "id": 1,
-        "name": "Noches de Rock",
-        "datetime": "2026-11-12T21:30",
-        "venue": "Movistar Arena",
+        "name": "La casa de Bernarda Alba",
+        "datetime": "2026-12-05T20:30",
+        "venue": "Teatro Gran Rex",
         "venueId": 1,
         "categories": [
-            "Música en vivo",
-            "Rock"
+            "Teatro"
         ],
-        "description": "Festival de rock con bandas nacionales invitadas.",
-        "organizerId": 7,
-        "status": "cancelled",
+        "description": "Una puesta contemporánea del clásico de Federico García Lorca.",
+        "organizerId": 3,
+        "status": "active",
         "sectors": {
-            "Campo": {
-                "price": 15000,
-                "capacity": 200,
-                "sold": 87
-            },
             "Platea": {
-                "price": 25000,
+                "price": 30000,
                 "seats": [
                     [
-                        "free",
-                        "free",
+                        "occupied",
+                        "occupied",
                         "occupied",
                         "free",
                         "free",
@@ -33,7 +27,7 @@
                     ],
                     [
                         "free",
-                        "occupied",
+                        "free",
                         "free",
                         "free",
                         "free",
@@ -77,68 +71,57 @@
     },
     {
         "id": 2,
-        "name": "Festival Indie BA",
-        "datetime": "2026-12-28T19:30",
-        "venue": "Estadio Obras",
+        "name": "Sesiones de Palermo: Bruma",
+        "datetime": "2026-12-12T21:00",
+        "venue": "La Tangente",
         "venueId": 2,
         "categories": [
+            "Música",
             "Música en vivo",
             "Indie"
         ],
-        "description": "Festival con artistas emergentes de la escena indie nacional.",
-        "organizerId": 5,
+        "description": "Recital íntimo de una banda indie emergente. Único sector general, con 190 de 200 entradas vendidas.",
+        "organizerId": 3,
         "status": "active",
         "sectors": {
-            "Campo": {
-                "price": 12000,
-                "capacity": 300,
-                "sold": 300
-            },
-            "Platea": {
-                "price": 18000,
-                "seats": [
-                    [
-                        "occupied",
-                        "occupied",
-                        "occupied"
-                    ],
-                    [
-                        "occupied",
-                        "occupied",
-                        "occupied"
-                    ]
-                ]
+            "General": {
+                "price": 35000,
+                "capacity": 200,
+                "sold": 190
             }
         }
     },
     {
         "id": 3,
-        "name": "STAND UP FEST",
-        "datetime": "2026-12-08T20:00",
-        "venue": "Estadio Obras",
+        "name": "Riff Monumental",
+        "datetime": "2027-01-30T21:00",
+        "venue": "Estadio Mâs Monumental",
         "venueId": 3,
         "categories": [
-            "Comedia",
-            "Stand Up"
+            "Música",
+            "Música en vivo",
+            "Rock"
         ],
-        "description": "Festival stand up",
-        "organizerId": 7,
+        "description": "Recital de rock con escenario central y sectores de campo y platea.",
+        "organizerId": 3,
         "status": "active",
         "sectors": {
             "Campo": {
-                "price": 10000,
-                "capacity": 100,
-                "sold": 99
+                "price": 90000,
+                "capacity": 5000,
+                "sold": 5000
             },
             "Platea": {
-                "price": 16000,
+                "price": 150000,
                 "seats": [
                     [
+                        "occupied",
                         "occupied",
                         "occupied",
                         "occupied"
                     ],
                     [
+                        "occupied",
                         "occupied",
                         "occupied",
                         "occupied"
@@ -149,170 +132,66 @@
     },
     {
         "id": 4,
-        "name": "Tech Conference 2026",
-        "datetime": "2026-12-03T10:00",
-        "venue": "Centro de Convenciones",
+        "name": "Martín Pugliese: En vivo",
+        "datetime": "2026-12-20T20:00",
+        "venue": "Teatro Picadero",
         "venueId": 4,
         "categories": [
-            "Tecnología",
-            "Conferencia",
-            "Indie"
+            "Comedia",
+            "Stand Up"
         ],
-        "description": "Conferencia sobre desarrollo de software y nuevas tecnologías.",
-        "organizerId": 4,
-        "status": "active",
+        "description": "Show de stand up en una sala teatral de formato íntimo.",
+        "organizerId": 3,
+        "status": "cancelled",
         "sectors": {
-            "General": {
-                "price": 1000.0,
-                "capacity": 500,
-                "sold": 320
-            },
-            "VIP": {
-                "price": 200.0,
-                "capacity": 50,
-                "sold": 45
+            "Platea": {
+                "price": 25000,
+                "seats": [
+                    [
+                        "free",
+                        "free",
+                        "free",
+                        "free"
+                    ],
+                    [
+                        "free",
+                        "free",
+                        "free",
+                        "free"
+                    ],
+                    [
+                        "free",
+                        "free",
+                        "free",
+                        "free"
+                    ]
+                ]
             }
         }
     },
     {
         "id": 5,
-        "name": "EVENTAZO",
-        "datetime": "2026-12-15T19:00",
-        "venue": "Movistar Arena",
-        "venueId": 1,
-        "categories": [
-            "Musica"
-        ],
-        "description": "evento imperdible",
-        "organizerId": 7,
-        "status": "cancelled",
-        "sectors": {
-            "Campo": {
-                "price": null,
-                "capacity": 200,
-                "sold": 0
-            },
-            "Platea": {
-                "price": null,
-                "seats": [
-                    [
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free"
-                    ],
-                    [
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free"
-                    ],
-                    [
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free"
-                    ],
-                    [
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free"
-                    ],
-                    [
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free",
-                        "free"
-                    ]
-                ]
-            }
-        }
-    },
-    {
-        "id": 6,
-        "name": "nuevo evento",
-        "datetime": "2027-01-27T19:30",
-        "venue": "Estadio Obras",
-        "venueId": 2,
-        "categories": [
-            "Teatro",
-            "Conferencia"
-        ],
-        "description": "un evento",
-        "organizerId": 7,
-        "status": "cancelled",
-        "sectors": {
-            "Campo": {
-                "price": 1000.0,
-                "capacity": 300,
-                "sold": 0
-            },
-            "Platea": {
-                "price": 3000.0,
-                "seats": [
-                    [
-                        "free",
-                        "free",
-                        "free"
-                    ],
-                    [
-                        "free",
-                        "free",
-                        "free"
-                    ]
-                ]
-            }
-        }
-    },
-    {
-        "id": 7,
-        "name": "Jonnhy Marr Argentina",
-        "datetime": "2025-11-26T22:00",
-        "venue": "Complejo C art media",
+        "name": "BA Tech Summit 2027",
+        "datetime": "2027-02-18T09:00",
+        "venue": "Centro de Convenciones Buenos Aires (CEC)",
         "venueId": 5,
         "categories": [
-            "Rock",
-            "Música en vivo"
+            "Tecnología",
+            "Conferencia"
         ],
-        "description": "Un capo",
-        "organizerId": 7,
+        "description": "Encuentro sobre desarrollo de software, inteligencia artificial y productos digitales.",
+        "organizerId": 3,
         "status": "active",
         "sectors": {
-            "campo general": {
-                "price": 126000.0,
-                "capacity": 3000,
-                "sold": 3
+            "General": {
+                "price": 20000,
+                "capacity": 800,
+                "sold": 400
             },
-            "vip": {
-                "price": 250000.0,
-                "capacity": 50,
-                "sold": 0
-            },
-            "campo trasero": {
-                "price": 90000.0,
-                "capacity": 300,
-                "sold": 0
+            "VIP": {
+                "price": 45000,
+                "capacity": 100,
+                "sold": 35
             }
         }
     }

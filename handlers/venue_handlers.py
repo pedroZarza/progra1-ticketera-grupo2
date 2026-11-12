@@ -2,11 +2,12 @@ from services import venue_service
 from utils import input_helpers
 from utils.messages import show_info, show_success, show_error
 from utils import layout_helpers
-from utils import sorting_helpers
+
+
 
 def show_venues():
+    """Lista todos los venues registrados."""
     venues = venue_service.get_all_venues()
-    venues = sorting_helpers.selection_sort_by_name(venues)
     if len(venues) == 0:
         show_info("No hay venues registrados.")
         return
@@ -15,6 +16,7 @@ def show_venues():
     return
 
 def show_venue_detail():
+    """Muestra el detalle de un venue a partir de su ID."""
     operationSuccess = False
     venues = venue_service.get_all_venues()
     if len(venues) == 0:
@@ -45,6 +47,7 @@ def show_venue_detail():
 
 
 def create_venue():
+    """Da de alta un venue con sus horarios y sectores."""
     print("\n- REGISTRAR NUEVO VENUE -")
     operationSuccess = False
     while not operationSuccess:
@@ -88,6 +91,11 @@ def create_venue():
 
 
 def create_sectors():
+    """Arma los sectores de un venue, generales o numerados.
+
+    Retorna:
+        dict o None: sectores por nombre, o None si cancela.
+    """
     sectors = {}
     quantity = input_helpers.prompt_positive_number("\nIngrese la cantidad de sectores: ")
     if quantity == "q": return
@@ -140,6 +148,7 @@ def create_sectors():
 
 
 def edit_venue_info():
+    """Actualiza el nombre y la dirección de un venue."""
     operationSuccess = False
     venues = venue_service.get_all_venues()
     if len(venues) == 0:
@@ -170,6 +179,7 @@ def edit_venue_info():
 
 
 def edit_venue_time_slots():
+    """Agrega o elimina un horario de un venue."""
     operationSuccess = False
     venues = venue_service.get_all_venues()
 
@@ -233,6 +243,7 @@ def edit_venue_time_slots():
             
             
 def edit_venue_sectors():
+    """Menú para agregar, eliminar o modificar sectores de un venue."""
     venues = venue_service.get_all_venues()
     if len(venues) == 0:
         show_info("No hay venues disponibles.")
@@ -277,6 +288,11 @@ def edit_venue_sectors():
 
 
 def add_venue_sector(venue):
+    """Agrega un sector general o numerado a un venue.
+
+    Parámetros:
+        venue (dict): venue a modificar.
+    """
     operationSuccess = False
 
     while not operationSuccess:
@@ -342,6 +358,11 @@ def add_venue_sector(venue):
     input("\nPresiona ENTER para volver al menú principal...")
 
 def remove_venue_sector(venue):
+    """Elimina un sector de un venue.
+
+    Parámetros:
+        venue (dict): venue a modificar.
+    """
     operationSuccess = False
 
     while not operationSuccess:
@@ -362,6 +383,11 @@ def remove_venue_sector(venue):
     
 
 def update_venue_sector(venue):
+    """Modifica la capacidad o la grilla de un sector.
+
+    Parámetros:
+        venue (dict): venue a modificar.
+    """
     operationSuccess = False
     while not operationSuccess:
         sectorName = input_helpers.prompt_non_empty_field(
@@ -424,6 +450,7 @@ def update_venue_sector(venue):
    
          
 def deactivate_venue():
+    """Inactiva un venue activo."""
     operationSuccess = False
     venues = venue_service.get_active_venues()
     if len(venues) == 0:
@@ -448,6 +475,7 @@ def deactivate_venue():
 
 
 def activate_venue():
+    """Reactiva un venue inactivo."""
     operationSuccess = False
     venues = venue_service.get_deactive_venues()
     if len(venues) == 0:
@@ -470,6 +498,7 @@ def activate_venue():
 
 
 def delete_venue():
+    """Elimina un venue que no tenga eventos asociados."""
     operationSuccess = False
     venues = venue_service.get_all_venues()
     if len(venues) == 0:

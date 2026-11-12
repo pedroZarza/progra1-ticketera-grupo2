@@ -1,93 +1,86 @@
 [
     {
-        "customer_id": 6,
+        "customer_id": 2,
         "event_id": 1,
-        "event_name": "nuevo evento",
-        "event_datetime": "2027-01-27T19:30",
+        "event_name": "La casa de Bernarda Alba",
+        "event_datetime": "2026-12-05T20:30",
         "sector": "Platea",
-        "quantity": 5,
+        "quantity": 2,
         "seats": [
             [
                 0,
                 0
             ],
             [
-                1,
-                0
-            ],
-            [
-                1,
-                2
-            ],
-            [
-                1,
-                1
-            ],
-            [
                 0,
-                2
+                1
             ]
         ],
-        "total": 15000.0,
+        "total": 60000,
         "active": true,
-        "purchase_date": "2026-11-12T06:42",
+        "purchase_date": "2026-11-12T09:15",
         "id": 1
     },
     {
-        "customer_id": 7,
+        "customer_id": 4,
         "event_id": 1,
-        "event_name": "Jonnhy Marr Argentina",
-        "event_datetime": "2026-11-26T22:00",
-        "sector": "campo general",
-        "quantity": 3,
-        "seats": [],
-        "total": 378000.0,
-        "active": true,
-        "purchase_date": "2026-11-12T06:46",
-        "id": 2
-    },
-    {
-        "customer_id": 7,
-        "event_id": 1,
-        "event_name": "nuevo evento",
-        "event_datetime": "2027-01-27T19:30",
+        "event_name": "La casa de Bernarda Alba",
+        "event_datetime": "2026-12-05T20:30",
         "sector": "Platea",
         "quantity": 1,
         "seats": [
             [
                 0,
-                1
+                2
             ]
         ],
-        "total": 3000.0,
-        "active": false,
-        "purchase_date": "2026-11-12T08:40",
+        "total": 30000,
+        "active": true,
+        "purchase_date": "2026-11-12T10:20",
+        "id": 2
+    },
+    {
+        "customer_id": 2,
+        "event_id": 2,
+        "event_name": "Sesiones de Palermo: Bruma",
+        "event_datetime": "2026-12-12T21:00",
+        "sector": "General",
+        "quantity": 2,
+        "seats": [],
+        "total": 70000,
+        "active": true,
+        "purchase_date": "2026-11-12T11:05",
         "id": 3
     },
     {
-        "customer_id": 7,
-        "event_id": 6,
-        "event_name": "nuevo evento",
-        "event_datetime": "2027-01-27T19:30",
-        "sector": "Campo",
-        "quantity": 10,
+        "customer_id": 4,
+        "event_id": 5,
+        "event_name": "BA Tech Summit 2027",
+        "event_datetime": "2027-02-18T09:00",
+        "sector": "General",
+        "quantity": 2,
         "seats": [],
-        "total": 10000.0,
-        "active": false,
-        "purchase_date": "2026-11-12T08:47",
+        "total": 40000,
+        "active": true,
+        "purchase_date": "2026-11-12T12:10",
         "id": 4
     },
     {
-        "customer_id": 6,
-        "event_id": 1,
-        "event_name": "Noches de Rock",
-        "event_datetime": "2026-11-12T21:30",
-        "sector": "Campo",
-        "quantity": 2,
-        "seats": [],
-        "total": 30000,
-        "active": true,
-        "purchase_date": "2026-11-12T12:49",
+        "customer_id": 2,
+        "event_id": 4,
+        "event_name": "Martín Pugliese: En vivo",
+        "event_datetime": "2026-12-20T20:00",
+        "sector": "Platea",
+        "quantity": 1,
+        "seats": [
+            [
+                0,
+                0
+            ]
+        ],
+        "total": 25000,
+        "active": false,
+        "purchase_date": "2026-11-12T12:35",
         "id": 5
     }
 ]
