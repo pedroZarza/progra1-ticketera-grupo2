@@ -2,6 +2,7 @@ from utils import input_helpers, layout_helpers
 from services import event_service, order_service
 from utils.messages import show_error, show_success, show_info
 from datetime import datetime
+from utils import sorting_helpers
 
 
 def buy_tickets(user):
@@ -151,6 +152,7 @@ def buy_tickets(user):
 
 def show_user_orders(user):
     orders = order_service.get_orders_by_customer(user["id"])
+    orders = sorting_helpers.bubble_sort_by_id(orders)
     layout_helpers.user_orders(orders)
     input("\nPresiona ENTER para volver al menú principal...")
 
