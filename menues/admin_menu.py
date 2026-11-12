@@ -16,10 +16,11 @@ def show_admin_menu(user):
         print("7. Editar información de un venue")
         print("8. Agregar/eliminar time slots de un venue")
         print("9. Editar configuración de sectores de un venue")
-        print("8. Inactivar venue")
-        print("9. Eliminar venue")
+        print("10. Inactivar venue")
+        print("11. Activar venue")
+        print("12. Eliminar venue")
         #print("8. Consultar estadísticas por venue")
-        print("11. Dar de alta un usuario (organizador o comprador)")
+        print("13. Dar de alta un usuario (organizador o comprador)")           
         #print("9. Consultar calendario de venues")
         print("0. Cerrar sesión")  
         # print("8. Gestionar usuarios (consultar / inactivar / restablecer contraseña)")
@@ -51,8 +52,12 @@ def show_admin_menu(user):
             case "9":
                 venue_handlers.edit_venue_sectors()
             case "10":
-                pass  # event_handler.manage_events()
+                venue_handlers.deactivate_venue()
             case "11":
+                venue_handlers.activate_venue()
+            case "12":
+                venue_handlers.delete_venue()
+            case "13":
                 user_handlers.register_user()
             case "0":
                 break

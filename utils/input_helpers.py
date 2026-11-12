@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from utils.messages import show_error
 
 
@@ -110,3 +111,70 @@ def prompt_time_slot(message):
         if not isValid:
             show_error("Ingrese un horario válido (HH:MM).")
     return timeSlot
+
+
+def prompt_list_option(message, options):
+    isValid = False
+    while not isValid:
+        value = input(message).strip()
+        if value.lower() == "q":
+            return "q"
+
+        if value.isdigit():
+            index = int(value)
+            if 1 <= index <= len(options):
+                return options[index - 1]
+
+        for option in options:
+            if option.lower() == value.lower():
+                return option
+
+        show_error("Seleccione una opción de la lista.")
+
+
+def prompt_date(message):
+    isValid = False
+    while not isValid:
+        date = input(message).strip()
+        if date.lower() == "q":
+            return "q"
+
+        parsedDate = None
+        parts = date.split("/")
+        if len(parts) == 3 and len(parts[0]) == 2 and len(parts[1]) == 2 and len(parts[2]) == 4:
+            if parts[0].isdigit() and parts[1].isdigit() and parts[2].isdigit():
+                try:
+                    parsedDate = datetime(int(parts[2]), int(parts[1]), int(parts[0]))
+                except ValueError:
+                    parsedDate = None
+
+        if parsedDate is None:
+            show_error("Ingrese una fecha válida (DD/MM/AAAA).")
+        elif parsedDate.date() < datetime.now().date():
+            show_error("La fecha del evento no puede ser en el pasado.")
+        else:
+            isValid = True
+    return date
+
+
+
+def prompt_price(message):
+    isValid = False
+    while not isValid:
+        value = input(message).strip()
+
+        if value.lower() == "q":
+            return "q"
+
+        try:
+            price = float(value)
+
+            if price > 0:
+                isValid = True
+            else:
+                show_error("El precio debe ser mayor a cero.")
+
+        except ValueError:
+            show_error("Ingrese un precio válido.")
+
+    return round(price, 2)

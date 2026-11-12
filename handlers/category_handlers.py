@@ -1,4 +1,3 @@
-from data import categories_data
 from utils import input_helpers
 from services import category_service as service
 from utils.messages import show_error, show_success, show_info

@@ -1,4 +1,5 @@
 from repositories import event_repository
+from services import venue_service
 from datetime import datetime
 from functools import reduce
 
@@ -57,6 +58,15 @@ def get_event_by_id(eventId):
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
 
+def get_events_by_organizer(organizerId):
+    events = get_active_events()
+    organizerEvents = []
+    for event in events:
+        if event["organizerId"] == organizerId:
+            organizerEvents.append(event)
+    return organizerEvents
+
+
 def get_events_by_search(query):
     events = get_active_events()
     q = query.lower()
@@ -83,101 +93,108 @@ def get_events_by_category(categories):
     return matchEvents
 
 
-# def create_event_service(organizerId, name, datetimeStr, category, venueIdStr, description):
+def get_available_time_slots(venueId, date):
+    venue = venue_service.get_venue_by_id(venueId)
+    if venue["active"] == False:
+        raise ValueError("El venue seleccionado está inactivo.")
+
+    selectedDate = datetime.strptime(date, "%d/%m/%Y").date()
+    events = event_repository.load_events()
+    occupiedSlots = []
+    for event in events:
+        existingDate = datetime.fromisoformat(event["datetime"])
+        sameVenue = event["venueId"] == venue["id"]
+        sameDay = existingDate.date() == selectedDate
+        if sameVenue and sameDay and event["status"] != "canceled":
+            occupiedSlots.append(existingDate.strftime("%H:%M"))
+
+    availableSlots = []
+    currentDate = datetime.now()
+    for timeSlot in venue["time_slots"]:
+        slotDate = datetime.strptime(f"{date} {timeSlot}", "%d/%m/%Y %H:%M")
+        if timeSlot not in occupiedSlots and slotDate >= currentDate:
+            availableSlots.append(timeSlot)
+
+    if len(availableSlots) == 0:
+        raise ValueError("No hay horarios disponibles para este venue en esa fecha.")
+
+    return availableSlots
 
 
-#     if not all(char.isalnum() or char.isspace() for char in name):
-#         raise ValueError("El nombre del evento no puede contener caracteres especiales. Solo se permiten letras, números y espacios.")
+def create_event(organizerId, name, description, date, time, selectedCategories, venueId):
+    venue = venue_service.get_venue_by_id(venueId)
+    if venue["active"] == False:
+        raise ValueError("El venue seleccionado está inactivo.")
 
-#     if not all(char.isalnum() or char.isspace() for char in description):
-#         raise ValueError("La descripción del evento no puede contener caracteres especiales. Solo se permiten letras, números y espacios.")
+    availableSlots = get_available_time_slots(venueId, date)
+    if time not in availableSlots:
+        raise ValueError(
+            f"El horario {time} no está disponible para este venue en esa fecha. Opciones: {', '.join(availableSlots)}"
+        )
 
-#     venue = next((v for v in venues if str(v["id"]) == str(venueIdStr)), None)
-#     if not venue:
-#         raise ValueError("El venue seleccionado no existe.")
+    eventDate = datetime.strptime(f"{date} {time}", "%d/%m/%Y %H:%M")
 
-#     if venue["active"] == False:
-#         raise ValueError("El venue seleccionado está desactivado.")
+    events = event_repository.load_events()
 
-#     try:
-#         eventDate = datetime.strptime(datetimeStr, "%d/%m/%Y %H:%M")
-#         if eventDate < datetime.now():
-#             raise ValueError("La fecha del evento no puede ser en el pasado.")
+    eventSectors = {}
+    for sectorName, sectorData in venue["sectors"].items():
+        if sectorData["type"] == "general":
+            eventSectors[sectorName] = {
+                "price": None,
+                "capacity": sectorData["capacity"],
+                "sold": 0
+            }
+        elif sectorData["type"] == "numbered":
+            seats = []
+            for row in range(sectorData["rows"]):
+                seatRow = []
+                for column in range(sectorData["columns"]):
+                    seatRow.append("free")
+                seats.append(seatRow)
+            eventSectors[sectorName] = {
+                "price": None,
+                "seats": seats
+            }
 
-#         isoDatetime = eventDate.isoformat()
-#     except ValueError as e:
-#         if "does not match format" in str(e):
-#             raise ValueError("Formato de fecha inválido. Utilice DD/MM/AAAA HH:MM.")
-#         raise e
+    if len(events) > 0:
+        newId = events[-1]["id"] + 1
+    else:
+        newId = 1
 
-#     eventTimeStr = eventDate.strftime("%H:%M")
-#     if eventTimeStr not in venue.get("time_slots", []):
-#         raise ValueError(f"El horario {eventTimeStr} no está disponible para este venue. Opciones: {', '.join(venue['time_slots'])}")
+    newEvent = {
+        "id": newId,
+        "name": name,
+        "datetime": eventDate.strftime("%Y-%m-%dT%H:%M"),
+        "venue": venue["name"],
+        "venueId": venue["id"],
+        "categories": selectedCategories,
+        "description": description,
+        "organizerId": organizerId,
+        "status": "active",
+        "sectors": eventSectors
+    }
+    events.append(newEvent)
+    event_repository.save_events(events)
+    return newEvent
 
-#     for event in events:
-#         is_same_venue = str(event.get("venueId")) == str(venue["id"]) or event.get("venue") == venue.get("name")
 
-#         is_same_time = False
-#         if event.get("datetime"):
-#             existing_dt = datetime.fromisoformat(event.get("datetime"))
-#             if existing_dt == eventDate:
-#                 is_same_time = True
+def update_sector_price(eventId, sectorName, price):
+    event = get_event_by_id(eventId)
+    if sectorName not in event["sectors"]:
+        raise ValueError(f"El sector {sectorName} no existe.")
 
-#         if is_same_venue and is_same_time and event.get("status") != "canceled":
-#             raise ValueError("El venue ya tiene un evento programado para esa misma fecha y horario.")
+    events = event_repository.load_events()
+    for storedEvent in events:
+        if storedEvent["id"] == event["id"]:
+            storedEvent["sectors"][sectorName]["price"] = price
+            event_repository.save_events(events)
+            return storedEvent
 
-#     matchedCategory = next((c for c in categories if c.lower() == category.lower()), None)
-#     if not matchedCategory:
-#         raise ValueError(f"Categoría inexistente. Opciones válidas: {', '.join(categories)}")
+    raise LookupError(f"No existe un evento con id '{eventId}'")
 
-#     eventSectors = {}
 
-#     for sectorName, sectorData in venue["sectors"].items():
 
-#         if sectorData["type"] == "general":
-#             eventSectors[sectorName] = {
-#                 "price": None,
-#                 "capacity": sectorData["capacity"],
-#                 "sold": 0
-#             }
 
-#         elif sectorData["type"] == "numbered":
-#             seats = []
-
-#             for row in range(sectorData["rows"]):
-#                 seatRow = []
-
-#                 for column in range(sectorData["columns"]):
-#                     seatRow.append("free")
-
-#                 seats.append(seatRow)
-
-#             eventSectors[sectorName] = {
-#                 "price": None,
-#                 "seats": seats
-#             }
-
-#     if len(events) == 0:
-#         eventId = 1
-#     else:
-#         eventId = max(event["id"] for event in events) + 1
-
-#     newEvent = {
-#         "id": eventId,
-#         "organizerId": organizerId,
-#         "name": name,
-#         "datetime": isoDatetime,
-#         "categories": [matchedCategory],
-#         "venueId": venue["id"],
-#         "venue": venue["name"],
-#         "description": description,
-#         "status": "active",
-#         "sectors": eventSectors
-#     }
-
-#     events.append(newEvent)
-
-#     return newEvent
 
 # def get_events_by_organizer_service(organizerId):
 

@@ -1,4 +1,4 @@
-from services import event_service, user_service, category_service
+from services import event_service, user_service, category_service, venue_service
 from utils import layout_helpers
 from utils import input_helpers
 from utils.messages import show_error, show_info, show_success
@@ -84,60 +84,160 @@ def filter_events_by_category():
     return
 
 
+def create_new_event(user):
+    print("\n- CREAR NUEVO EVENTO -")
+    venues = venue_service.get_active_venues()
+    categories = category_service.get_categories()
+
+    operationSuccess = False
+    while not operationSuccess:
+        name = input_helpers.prompt_non_empty_field("\nNombre del evento: ")
+        if name.lower() == "q": return
+
+        description = input_helpers.prompt_non_empty_field("\nDescripción: ")
+        if description.lower() == "q": return
+
+        scheduleSelected = False
+        while not scheduleSelected:
+
+            print("\nVenues activos:")
+            if len(venues) == 0:
+                show_info("No hay venues activos disponibles.")
+                return
+            for venue in venues:
+                print(f"[{venue['id']}] {venue['name']}")
+            
+            venueId = input_helpers.prompt_positive_number("\nSeleccione el venue mediante su id: ")
+            if venueId == "q": return
+
+            date = input_helpers.prompt_date("\nFecha (DD/MM/AAAA): ")
+            if date.lower() == "q": return
+
+            try:
+                availableSlots = event_service.get_available_time_slots(venueId, date)
+            except (ValueError, LookupError) as error:
+                show_error(error)
+                response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+                if response.strip().lower() == "q":
+                    return
+                continue
+
+            print("\nHorarios disponibles:")
+            for index, slot in enumerate(availableSlots, start=1):
+                print(f"{index}. {slot}")
+
+            time = input_helpers.prompt_list_option("\nSeleccione un horario: ", availableSlots)
+            if time.lower() == "q": return
+            scheduleSelected = True
+
+        print("\nCategorías disponibles:")
+        if len(categories) == 0:
+            show_info("No hay categorías disponibles.")
+            return
+        for index, category in enumerate(categories, start=1):
+            print(f"{index}. {category}")
+
+        selectedCategories = []
+        while True:
+            category = input_helpers.prompt_list_option("\nIngrese las categorías del evento (q para terminar selección): ", categories)
+            if category == "q":
+                if len(selectedCategories) == 0:
+                    show_error("Debe seleccionar al menos una categoría.")
+                    continue
+                break
+            if category in selectedCategories:
+                show_error("Esa categoría ya fue agregada.")
+                continue
+            selectedCategories.append(category)
+            show_success(f"Categoría '{category}' agregada correctamente.")
+        try:
+            event = event_service.create_event(
+                user["id"], name, description, date, time, selectedCategories, venueId
+            )
+            show_success("El evento ha sido dado de alta con éxito.")
+            print(f"\n[{event['id']}] {event['name']}")
+            operationSuccess = True
+        except (ValueError, LookupError) as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.strip().lower() == "q":
+                return
+    define_event_prices(event["id"], required=True)
+    input("\nPresiona ENTER para volver al menú principal...")
 
 
 
-def create_event(organizerId):
-    pass
-    # print("\n" + "="*45)
-    # print("           CREAR NUEVO EVENTO")
-    # print("="*45)
+def define_event_prices(eventId, required=False):
+    print("\n- DEFINIR/MODIFICAR PRECIOS -")
+    try:
+        event = event_service.get_event_by_id(eventId)
+    except LookupError as error:
+        show_error(error)
+        return
+
+    print(f"\n[{event['id']}] {event['name']}")
+    print("-" * 45)
+
+    sectorPrices = []
+    for i, (sectorName, sectorData) in enumerate(event["sectors"].items(), start=1):
+        priceAccepted = False
+        while not priceAccepted:
+            if "capacity" in sectorData:
+                print(f"\nSector {i}: '{sectorName}' (capacity: {sectorData['capacity']})")
+            else:
+                capacity = len(sectorData["seats"]) * len(sectorData["seats"][0])
+                print(f"\nSector {i}: '{sectorName}' (capacity: {capacity})")
+            print(f"Precio: ${sectorData['price']:.2f}" if sectorData['price'] is not None else "Precio: No definido")
+
+            price = input_helpers.prompt_price("\nIngrese el nuevo precio del sector: ")
+            if price == "q":
+                if required:
+                    show_error("Debe definir el precio de todos los sectores.")
+                    continue
+                show_info("Operación cancelada. No se guardaron los precios.")
+                return
+
+            sectorPrices.append((sectorName, price))
+            priceAccepted = True
+
+    try:
+        for sectorName, price in sectorPrices:
+            event_service.update_sector_price(eventId, sectorName, price)
+        show_success("Los precios de los sectores fueron actualizados.")
+    except (LookupError, ValueError) as error:
+        show_error(error)
+
+
+def edit_event_prices(user):
+    print("\n- EDITAR PRECIOS DE UN EVENTO -")
+    events = event_service.get_events_by_organizer(user["id"])
+    if len(events) == 0:
+        show_info("No tenés eventos disponibles para editar.")
+        return
+
+    layout_helpers.events_board(events)
+    while True:
+        eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento: ")
+        if eventId == "q":
+            return
+
+        selectedEvent = None
+        for event in events:
+            if event["id"] == eventId:
+                selectedEvent = event
+                break
+
+        if selectedEvent is None:
+            show_error("Ese evento no está en tu lista.")
+            continue
+
+        define_event_prices(selectedEvent["id"])
+        break
+
+    input("\nPresiona ENTER para volver al menú principal...")
     
-    # name = input("Ingrese el nombre del evento: ").strip()
-    # description = input("Ingrese una breve descripción: ").strip()
+            
     
-    # dateStr = input("Ingrese la fecha (DD/MM/AAAA): ").strip()
-    # timeStr = input("Ingrese la hora (HH:MM): ").strip()
-    
-    # datetimeStr = f"{dateStr} {timeStr}"
-
-    # availableCategories = ", ".join(categories)
-    # category = input(f"Ingrese la categoría ({availableCategories}): ").strip()
-   
-#     venueIdStr = input("Ingrese el ID del Venue (Ej: 1): ").strip()
-
-#     if not all([name, description, dateStr, timeStr, category, venueIdStr]):
-#         print("\n[ERROR] Todos los campos son obligatorios. Operación cancelada.")
-#         input("\nPresiona ENTER para volver al menú...")
-#         return
-
-#     try:
-        
-#         newEvent = service.create_event_service(
-#             organizerId=organizerId,
-#             name=name,
-#             datetimeStr=datetimeStr,
-#             category=category,
-#             venueIdStr=venueIdStr,
-#             description=description
-#         )
-        
-#         print("\n" + "-"*45)
-#         print("¡El evento fue creado correctamente!")
-#         print(f"-> ID del Evento: {newEvent['id']}")
-#         print(f"-> Nombre: {newEvent['name']}")
-#         print(f"-> Sectores cargados: {', '.join(newEvent['sectors'].keys())}")
-#         print("-" * 45)
-#         print("* Recordá definir los precios por sector para habilitar la venta.")
-        
-#     except ValueError as e:
-#         print(f"\n[ADVERTENCIA] {e}")
-        
-#     except Exception as e:
-#         print(f"\n[ERROR CRÍTICO] Ocurrió un error inesperado: {e}")
-
-#     input("\nPresiona ENTER para volver al menú principal...")
-#     return
 
 # def view_my_events(organizerId):
 #     pass

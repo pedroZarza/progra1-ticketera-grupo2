@@ -45,6 +45,7 @@ def show_venue_detail():
 
 
 def create_venue():
+    print("\n- REGISTRAR NUEVO VENUE -")
     operationSuccess = False
     while not operationSuccess:
         name = input_helpers.prompt_non_empty_field("\nNombre del venue: ")
@@ -422,39 +423,74 @@ def update_venue_sector(venue):
    
    
          
-def delete_venue():
-    show_venues()
-
-    venue_id = input_helpers.prompt_non_empty_field(
-        "\nIngrese el ID del venue que desea eliminar: "
-    )
-
-    if venue_id.lower() == "q":
-        return
-
-    success = venue_service.delete_venue(venue_id)
-
-    if success:
-        show_success("Venue eliminado exitosamente.")
-    else:
-        show_error("No existe un venue con ese ID.")
-
 def deactivate_venue():
-    show_venues()
-
-    venue_id = input_helpers.prompt_non_empty_field(
-        "\nIngrese el ID del venue que desea inactivar: "
-    )
-
-    if venue_id.lower() == "q":
+    operationSuccess = False
+    venues = venue_service.get_active_venues()
+    if len(venues) == 0:
+        show_info("No hay venues disponibles.")
         return
 
-    success = venue_service.deactivate_venue(venue_id)
+    layout_helpers.venues_board(venues)
 
-    if success:
-        show_success("Venue inactivado exitosamente.")
-    else:
-        show_error("No existe un venue con ese ID.")
+    while not operationSuccess:
+        venueId = input_helpers.prompt_positive_number("\nIngrese el ID del venue que desea inactivar: ")
+        if venueId == "q": return
+
+        try:
+            venue = venue_service.deactivate_venue(venueId)
+            show_success(f"El venue '{venue['name']}' fue inactivado correctamente.")
+            operationSuccess = True
+        except (ValueError, LookupError) as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.strip().lower() == "q": return
+    input("\nPresiona ENTER para volver al menú principal...")
+
+
+def activate_venue():
+    operationSuccess = False
+    venues = venue_service.get_deactive_venues()
+    if len(venues) == 0:
+        show_info("No hay venues disponibles.")
+        return
+    layout_helpers.venues_board(venues)
+    while not operationSuccess:
+        venueId = input_helpers.prompt_positive_number("\nIngrese el ID del venue que desea activar: ")     
+        if venueId == "q": return
+        try:
+            venue = venue_service.activate_venue(venueId)
+            show_success(f"El venue '{venue['name']}' fue activado correctamente.")
+            operationSuccess = True
+        except (ValueError, LookupError) as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.strip().lower() == "q": return
+    input("\nPresiona ENTER para volver al menú principal...")
+
+
+
+def delete_venue():
+    operationSuccess = False
+    venues = venue_service.get_all_venues()
+    if len(venues) == 0:
+        show_info("No hay venues disponibles.")
+        return
+
+    layout_helpers.venues_board(venues)
+
+    while not operationSuccess:
+        venueId = input_helpers.prompt_positive_number("\nIngrese el ID del venue que desea eliminar: ")
+        if venueId == "q": return
+
+        try:
+            venue = venue_service.delete_venue(venueId)
+            show_success(f"El venue '{venue['name']}' fue eliminado correctamente.")
+            operationSuccess = True
+        except (ValueError, LookupError) as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.strip().lower() == "q": return
+    input("\nPresiona ENTER para volver al menú principal...")
 
 
 

@@ -1,4 +1,4 @@
-from repositories import venue_repository
+from repositories import event_repository, venue_repository
 from datetime import datetime
 
 
@@ -9,9 +9,15 @@ def get_all_venues():
 def get_active_venues():
     venues = venue_repository.load_venues()
     activeVenues = [venue for venue in venues if venue["active"]]
-    print(activeVenues)
     return activeVenues
-    
+
+def get_deactive_venues():
+    venues = venue_repository.load_venues()
+    deactiveVenues = [venue for venue in venues if not venue["active"]]
+    return deactiveVenues       
+        
+
+
 def get_venue_by_id(venueId):
     venues = venue_repository.load_venues()
     for venue in venues:
@@ -155,27 +161,47 @@ def update_venue_sector(venueId, sectorName, sectorData):
 
 
 
+def deactivate_venue(venueId):
+    venues = venue_repository.load_venues()
+
+    for venue in venues:
+        if venue["id"] == venueId:
+            if venue["active"] == False:
+                raise ValueError("No es posible inactivar. El venue ya se encuentra inactivo.")
+
+            venue["active"] = False
+            venue_repository.save_venues(venues)
+            return venue
+
+    raise LookupError(f"No existe un venue con ID: {venueId}")
+
+def activate_venue(venueId):
+    venues = venue_repository.load_venues()
+    for venue in venues:
+        if venue["id"] == venueId:
+            if venue["active"] == True:
+                raise ValueError("No es posible activar. El venue ya se encuentra activo.")
+            venue["active"] = True
+            venue_repository.save_venues(venues)
+            return venue
+    raise LookupError(f"No existe un venue con ID: {venueId}")  
 
 
+def delete_venue(venueId):
+    venues = venue_repository.load_venues()
+    events = event_repository.load_events()
 
+    for venue in venues:
+        if venue["id"] == venueId:
+            for event in events:
+                if event["venueId"] == venueId:
+                    raise ValueError("No es posible eliminar. El venue tiene eventos asociados.")
 
+            venues.remove(venue)
+            venue_repository.save_venues(venues)
+            return venue
 
-# def delete_venue(venue_id):
-#     venues = get_all_venues()
-#     for venue in venues:
-#         if str(venue["id"]) == venue_id:
-#             venues_data.venues.remove(venue)
-#             return True
-
-#     return False
-
-# def deactivate_venue(venue_id):
-#     for venue in venues_data.venues:
-#         if str(venue["id"]) == venue_id:
-#             venue["active"] = False
-#             return True
-
-#     return False
+    raise LookupError(f"No existe un venue con ID: {venueId}")
 
 
 
