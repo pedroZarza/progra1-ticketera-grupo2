@@ -1,48 +1,109 @@
-from data import orders_data
-from services import event_service
+from repositories import orders_repository, event_repository
+from datetime import datetime
 
 
 def create_order(newOrderData):
-    if len(orders_data.orders) > 0:
-        newOrderData["id"] = orders_data.orders[-1]["id"] + 1
+    orders = orders_repository.load_orders()
+    events = event_repository.load_events()
+
+    event = None
+
+    for storedEvent in events:
+        if storedEvent["id"] == newOrderData["event_id"]:
+            event = storedEvent
+            break
+
+    if event is None:
+        raise LookupError(
+            f"No existe un evento con id '{newOrderData['event_id']}'"
+        )
+
+    if event["status"] != "active":
+        raise ValueError("El evento seleccionado no está activo.")
+
+    eventDate = datetime.fromisoformat(event["datetime"])
+
+    if eventDate <= datetime.now():
+        raise ValueError("El evento seleccionado ya finalizó.")
+
+    sectorName = newOrderData["sector"]
+
+    if sectorName not in event["sectors"]:
+        raise ValueError("El sector seleccionado no existe.")
+
+    sector = event["sectors"][sectorName]
+
+    if sector["price"] is None:
+        raise ValueError(
+            "El sector seleccionado no tiene precio definido."
+        )
+
+    quantity = newOrderData["quantity"]
+
+    if quantity <= 0:
+        raise ValueError(
+            "La cantidad de entradas debe ser mayor a cero."
+        )
+
+    selectedSeats = newOrderData["seats"]
+
+    if "capacity" in sector:
+        available = sector["capacity"] - sector["sold"]
+
+        if quantity > available:
+            raise ValueError(
+                f"No hay suficientes entradas disponibles. "
+                f"Disponibles: {available}")
+
+        sector["sold"] += quantity
+
+    elif "seats" in sector:
+
+        if len(selectedSeats) != quantity:
+            raise ValueError("La cantidad de butacas seleccionadas no coincide con la cantidad de entradas.")
+
+        for seat in selectedSeats:
+            row = seat[0]
+            column = seat[1]
+
+            if row < 0 or row >= len(sector["seats"]):
+                raise ValueError("La fila seleccionada no existe.")
+
+            if column < 0 or column >= len(sector["seats"][row]):
+                raise ValueError("La butaca seleccionada no existe.")
+
+            if sector["seats"][row][column] != "free":
+                raise ValueError("Una de las butacas seleccionadas ya está ocupada.")
+
+        for seat in selectedSeats:
+            row = seat[0]
+            column = seat[1]
+
+            sector["seats"][row][column] = "occupied"
+
+    else:
+        raise ValueError("El sector seleccionado tiene una configuración inválida.")
+
+    if len(orders) > 0:
+        newOrderData["id"] = max(
+            order["id"] for order in orders) + 1
     else:
         newOrderData["id"] = 1
 
-    orders_data.orders.append(newOrderData)
-    orders_data.save_orders()
-    orders_data.write_order_log(newOrderData)
+    orders.append(newOrderData)
 
-    return True, newOrderData
+    event_repository.save_events(events)
+    orders_repository.save_orders(orders)
+
+    return newOrderData
 
 
 def get_orders_by_customer(customer_id):
-    customer_orders = []
+    orders = orders_repository.load_orders()
+    customerOrders = []
 
-    for order in orders_data.orders:
+    for order in orders:
         if order["customer_id"] == customer_id:
-            customer_orders.append(order)
+            customerOrders.append(order)
 
-    return customer_orders
-
-def restore_orders_availability():
-    for order in orders_data.orders:
-        event = event_service.get_event_by_id(order["event_id"])
-
-        if event is None:
-            continue
-
-        if "event_name" not in order or "event_datetime" not in order:
-            continue
-
-        if event["name"] != order["event_name"]:
-            continue
-
-        if event["datetime"] != order["event_datetime"]:
-            continue
-
-        event_service.update_event_availability_service(
-            order["event_id"],
-            order["sector"],
-            order["quantity"],
-            order["seats"]
-        )
+    return customerOrders
