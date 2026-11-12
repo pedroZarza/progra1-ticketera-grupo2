@@ -2,9 +2,12 @@ from services import event_service, user_service, category_service, venue_servic
 from utils import layout_helpers
 from utils import input_helpers
 from utils.messages import show_error, show_info, show_success
+from utils import sorting_helpers
 
 def show_events():
     events = event_service.get_active_events()
+    events = sorting_helpers.insertion_sort_by_datetime(events)
+    
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
         input("\nPresiona ENTER para volver al menú principal...")

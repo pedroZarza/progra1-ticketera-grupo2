@@ -2,11 +2,11 @@ from services import venue_service
 from utils import input_helpers
 from utils.messages import show_info, show_success, show_error
 from utils import layout_helpers
-
-
+from utils import sorting_helpers
 
 def show_venues():
     venues = venue_service.get_all_venues()
+    venues = sorting_helpers.selection_sort_by_name(venues)
     if len(venues) == 0:
         show_info("No hay venues registrados.")
         return
