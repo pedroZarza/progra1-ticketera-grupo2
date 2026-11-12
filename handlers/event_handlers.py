@@ -1,9 +1,12 @@
+import os
 from services import event_service, user_service, category_service, venue_service
 from utils import layout_helpers
 from utils import input_helpers
 from utils.messages import show_error, show_info, show_success
+from utils.sales_report import save_sales_report
 
 def show_events():
+    """Muestra la cartelera de eventos activos."""
     events = event_service.get_active_events()
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
@@ -14,6 +17,7 @@ def show_events():
     return
 
 def show_event_detail():
+    """Pide un ID y muestra el detalle de un evento activo."""
     operationSuccess = False
     events = event_service.get_active_events()
     if len(events) == 0:
@@ -38,6 +42,7 @@ def show_event_detail():
     return
 
 def search_events():
+    """Busca eventos activos por nombre, descripción, venue o categoría."""
     operationSuccess = False
     while not operationSuccess:
         query = input_helpers.prompt_non_empty_field("Búsqueda: ")
@@ -54,6 +59,7 @@ def search_events():
 
 
 def filter_events_by_category():
+    """Filtra los eventos activos por las categorías ingresadas."""
     categories = category_service.get_categories()
     if len(categories) == 0:
         show_info("No hay categorías disponibles.")
@@ -89,6 +95,11 @@ def filter_events_by_category():
 
 
 def create_new_event(user):
+    """Da de alta un evento del organizador y pide los precios de sus sectores.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     print("\n- CREAR NUEVO EVENTO -")
     venues = venue_service.get_active_venues()
     categories = category_service.get_categories()
@@ -174,6 +185,12 @@ def create_new_event(user):
 
 
 def define_event_prices(eventId, required=False):
+    """Pide y guarda el precio de cada sector de un evento.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        required (bool): si es True, exige el precio de todos los sectores.
+    """
     print("\n- DEFINIR/MODIFICAR PRECIOS -")
     try:
         event = event_service.get_event_by_id(eventId)
@@ -219,12 +236,22 @@ def define_event_prices(eventId, required=False):
 
 
 def view_my_events(user):
+    """Muestra los eventos activos del organizador.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     events = event_service.get_events_by_organizer(user["id"])
     layout_helpers.organizer_events_board(events)
     input("\nPresiona ENTER para volver al menú principal...")
 
 
 def show_organizer_event_detail(user):
+    """Muestra el detalle de un evento propio del organizador.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     operationSuccess = False
     events = event_service.get_events_by_organizer(user["id"])
     if len(events) == 0:
@@ -248,6 +275,11 @@ def show_organizer_event_detail(user):
 
 
 def assign_event_category(user):
+    """Asigna una categoría del catálogo a un evento del organizador.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     print("\n- ASIGNAR CATEGORÍA A UN EVENTO -")
     events = event_service.get_events_by_organizer(user["id"])
     layout_helpers.organizer_events_board(events)
@@ -310,6 +342,11 @@ def assign_event_category(user):
 
 
 def remove_event_category(user):
+    """Quita una categoría de un evento, dejando al menos una.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     print("\n- ELIMINAR CATEGORÍA DE UN EVENTO -")
     events = event_service.get_events_by_organizer(user["id"])
     layout_helpers.organizer_events_board(events)
@@ -357,6 +394,11 @@ def remove_event_category(user):
 
 
 def edit_event_info(user):
+    """Actualiza el nombre y la descripción de un evento propio.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     operationSuccess = False
     events = event_service.get_events_by_organizer(user["id"])
     if len(events) == 0:
@@ -388,6 +430,11 @@ def edit_event_info(user):
 
 
 def edit_event_prices(user):
+    """Permite modificar los precios de un evento del organizador.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     print("\n- EDITAR PRECIOS DE UN EVENTO -")
     events = event_service.get_events_by_organizer(user["id"])
     layout_helpers.organizer_events_board(events)
@@ -416,6 +463,11 @@ def edit_event_prices(user):
 
 
 def cancel_event(user):
+    """Cancela un evento propio si no tiene órdenes activas.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     operationSuccess = False
     events = event_service.get_events_by_organizer(user["id"])
     if len(events) == 0:
@@ -442,6 +494,11 @@ def cancel_event(user):
 
 
 def view_event_history(user):
+    """Muestra los eventos cancelados o ya finalizados del organizador.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     events = event_service.get_events_history(user["id"])
     if len(events) == 0:
         show_info("No tenés eventos en el historial.")
@@ -455,6 +512,11 @@ def view_event_history(user):
 
 
 def view_event_orders(user):
+    """Lista las órdenes activas de un evento del organizador.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     events = event_service.get_events_by_organizer(user["id"])
     if len(events) == 0:
         show_info("No tenés eventos publicados.")
@@ -479,6 +541,11 @@ def view_event_orders(user):
     return
 
 def view_event_sales_summary(user):
+    """Muestra el resumen de ventas y ocupación de un evento.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     events = event_service.get_all_events_by_organizer(user["id"])
     if len(events) == 0:
         show_info("No tenés eventos publicados.")
@@ -493,6 +560,36 @@ def view_event_sales_summary(user):
         try:
             event = event_service.get_any_event_by_organizer(user["id"], eventId)
             layout_helpers.event_status_summary(event)
+            operationSuccess = True
+        except LookupError as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.lower() == "q":
+                return
+    input("\nPresiona ENTER para volver al menú principal...")
+
+
+def generate_sales_report(user):
+    """Genera y guarda el reporte de ventas de un evento.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
+    events = event_service.get_all_events_by_organizer(user["id"])
+    if len(events) == 0:
+        show_info("No tenés eventos publicados.")
+        input("\nPresiona ENTER para volver al menú principal...")
+        return
+    layout_helpers.organizer_events_board(events)
+    operationSuccess = False
+    while not operationSuccess:
+        eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento para generar el reporte: ")
+        if eventId == "q":
+            return
+        try:
+            event = event_service.get_any_event_by_organizer(user["id"], eventId)
+            path = save_sales_report(event)
+            show_success(f"El reporte de ventas ha sido generado en la ruta: {path}")
             operationSuccess = True
         except LookupError as error:
             show_error(error)

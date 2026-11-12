@@ -4,6 +4,14 @@ from datetime import datetime, timedelta
 
 
 def create_order(newOrderData):
+    """Valida la compra, descuenta disponibilidad y guarda la orden.
+
+    Parámetros:
+        newOrderData (dict): cliente, evento, sector, cantidad, butacas y total.
+
+    Retorna:
+        dict: la orden creada, con su id.
+    """
     orders = orders_repository.load_orders()
     events = event_repository.load_events()
 
@@ -94,6 +102,15 @@ def create_order(newOrderData):
 
 
 def cancel_order(orderId, customerId):
+    """Cancela una orden propia y restituye la disponibilidad del evento.
+
+    Parámetros:
+        orderId (int): identificador de la orden.
+        customerId (int): identificador del comprador.
+
+    Retorna:
+        dict: la orden cancelada.
+    """
     orders = orders_repository.load_orders()
 
     order = None
@@ -133,6 +150,14 @@ def cancel_order(orderId, customerId):
 
 
 def get_orders_by_customer(customerId):
+    """Devuelve las órdenes de un cliente.
+
+    Parámetros:
+        customerId (int): identificador del comprador.
+
+    Retorna:
+        list: órdenes del cliente.
+    """
     orders = orders_repository.load_orders()
     customerOrders = []
 
@@ -144,6 +169,14 @@ def get_orders_by_customer(customerId):
 
 
 def get_active_orders_by_event_id(eventId):
+    """Devuelve las órdenes activas de un evento.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+
+    Retorna:
+        list: órdenes activas del evento.
+    """
     orders = orders_repository.load_orders()
     activeOrders = []
     for storedOrder in orders:

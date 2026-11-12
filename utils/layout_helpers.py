@@ -4,6 +4,11 @@ from utils.messages import show_info, show_error, show_success, show_warning
 
 
 def events_board(events):
+    """Imprime la cartelera de eventos con su disponibilidad.
+
+    Parámetros:
+        events (list): eventos a mostrar.
+    """
     print("\n==========================================================")
     print("                    CARTELERA - EVENTPASS")
     print("==========================================================")
@@ -55,6 +60,12 @@ def events_board(events):
 
 
 def event_detail(event, organizer):
+    """Imprime el detalle de un evento y sus sectores.
+
+    Parámetros:
+        event (dict): evento a consultar.
+        organizer (dict o None): organizador del evento.
+    """
     eventDatetime = datetime.fromisoformat(event["datetime"])
     formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
 
@@ -113,6 +124,11 @@ def event_detail(event, organizer):
         
         
 def venues_board(venues):
+    """Imprime el listado de venues.
+
+    Parámetros:
+        venues (list): venues a mostrar.
+    """
     print("\nVENUES DEL SISTEMA")
 
     for venue in venues:
@@ -126,6 +142,11 @@ def venues_board(venues):
             print(f"-{sector_name}")
             
 def venue_detail(venue):
+    """Imprime el detalle de un venue y su capacidad.
+
+    Parámetros:
+        venue (dict): venue a mostrar.
+    """
     totalCapacity = 0
     for sector in venue["sectors"].values():
         if sector["type"] == "general":
@@ -153,6 +174,15 @@ def venue_detail(venue):
 
 
 def purchase_summary(event, sectorName, quantity, selectedSeats, total):
+    """Imprime el resumen de una compra antes de confirmarla.
+
+    Parámetros:
+        event (dict): evento a consultar.
+        sectorName (str): sector elegido.
+        quantity (int): cantidad de entradas.
+        selectedSeats (list): butacas elegidas, cada una como [fila, columna].
+        total (float): importe total.
+    """
     print("\n==========================================================")
     print("               RESUMEN DE COMPRA - EVENTPASS")
     print("==========================================================")
@@ -170,6 +200,11 @@ def purchase_summary(event, sectorName, quantity, selectedSeats, total):
 
 
 def user_orders(orders):
+    """Imprime las órdenes de un usuario.
+
+    Parámetros:
+        orders (list): órdenes a mostrar.
+    """
     print("\n==========================================================")
     print("                  MIS TICKETS - EVENTPASS")
     print("==========================================================")
@@ -200,6 +235,11 @@ def user_orders(orders):
 
 
 def organizer_events_board(events):
+    """Imprime los eventos de un organizador con su estado.
+
+    Parámetros:
+        events (list): eventos a mostrar.
+    """
     print("\n==========================================================")
     print("                  MIS EVENTOS - EVENTPASS")
     print("==========================================================")
@@ -226,6 +266,12 @@ def organizer_events_board(events):
     print("\n" + "=" * 58)
 
 def event_orders(event, orders):
+    """Imprime las órdenes activas de un evento.
+
+    Parámetros:
+        event (dict): evento a consultar.
+        orders (list): órdenes a mostrar.
+    """
     eventDatetime = datetime.fromisoformat(event["datetime"])
     formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
 
@@ -259,15 +305,38 @@ def event_orders(event, orders):
        
 
 
-def event_status_summary(event):
+def count_sold_seats(row, index=0):
+    """Cuenta de forma recursiva las butacas ocupadas de una fila.
+
+    Parámetros:
+        row (list): estados de las butacas.
+        index (int): posición desde la que cuenta. Por defecto 0.
+
+    Retorna:
+        int: cantidad de butacas ocupadas.
+    """
+    if index == len(row):
+        return 0
+    if row[index] == "occupied":
+        return 1 + count_sold_seats(row, index + 1)
+    return count_sold_seats(row, index + 1)
+  
+
+def build_event_sales_summary(event):
+    """Calcula vendidas, disponibles, recaudación y estado del evento.
+
+    Parámetros:
+        event (dict): evento a consultar.
+
+    Retorna:
+        dict: totales, ocupación, estado y detalle por sector.
+    """
     eventDatetime = datetime.fromisoformat(event["datetime"])
-    formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
 
     totalSold = 0
     totalCapacity = 0
     totalRevenue = 0
     sectors = []
-
     for sectorName, sector in event["sectors"].items():
         if "capacity" in sector:
             capacity = sector["capacity"]
@@ -276,10 +345,8 @@ def event_status_summary(event):
             capacity = 0
             sold = 0
             for row in sector["seats"]:
-                for seat in row:
-                    capacity += 1
-                    if seat == "occupied":
-                        sold += 1
+                capacity += len(row)
+                sold += count_sold_seats(row)
 
         available = capacity - sold
         price = sector["price"] if sector["price"] is not None else 0
@@ -301,8 +368,6 @@ def event_status_summary(event):
     else:
         occupancyPercentage = totalSold * 100 / totalCapacity
 
-
-   
     if event["status"] == "cancelled":
         status = "CANCELADO"
     elif eventDatetime < datetime.now():
@@ -314,14 +379,35 @@ def event_status_summary(event):
     else:
         status = "CON DISPONIBILIDAD"
 
+    return {
+        "datetime": eventDatetime,
+        "status": status,
+        "total_sold": totalSold,
+        "total_capacity": totalCapacity,
+        "available": availableTotal,
+        "revenue": totalRevenue,
+        "occupancy": occupancyPercentage,
+        "sectors": sectors,
+    }
+
+
+def event_status_summary(event):
+    """Imprime el resumen de ventas y ocupación de un evento.
+
+    Parámetros:
+        event (dict): evento a consultar.
+    """
+    summary = build_event_sales_summary(event)
+    formattedDatetime = summary["datetime"].strftime("%d/%m/%Y %H:%M")
+
     print(f"\n[{event['id']}] {event['name']}")
     print(f"{formattedDatetime}  |  {event['venue']}")
-    print(f"Estado: {status}")
-    print(f"\nVendidas:      {totalSold} / {totalCapacity}  ({occupancyPercentage:.0f}%)")
-    print(f"Disponibles:   {availableTotal}")
-    print(f"Recaudado:     ${totalRevenue:.2f}")
+    print(f"Estado: {summary['status']}")
+    print(f"\nVendidas:      {summary['total_sold']} / {summary['total_capacity']}  ({summary['occupancy']:.0f}%)")
+    print(f"Disponibles:   {summary['available']}")
+    print(f"Recaudado:     ${summary['revenue']:.2f}")
     print("\nSectores:")
-    for sector in sectors:
+    for sector in summary["sectors"]:
         print(
             f"{sector['name']}: {sector['sold']} vendidas, "
             f"{sector['available']} libres, ${sector['revenue']:.2f}"

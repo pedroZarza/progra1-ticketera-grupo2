@@ -2,6 +2,11 @@ from utils.messages import show_error
 from handlers import category_handlers, venue_handlers, user_handlers
 
 def show_admin_menu(user):
+    """Muestra el menú del administrador y ejecuta la opción elegida.
+
+    Parámetros:
+        user (dict): usuario autenticado.
+    """
     while True:
         print("\n==========================================================\n")
         print("EVENTPASS - ADMIN PANEL".center(58))

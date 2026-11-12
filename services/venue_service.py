@@ -3,15 +3,30 @@ from datetime import datetime
 
 
 def get_all_venues():
+    """Devuelve todos los venues.
+
+    Retorna:
+        list: venues registrados.
+    """
     return venue_repository.load_venues()
 
 
 def get_active_venues():
+    """Devuelve solo los venues activos.
+
+    Retorna:
+        list: venues activos.
+    """
     venues = venue_repository.load_venues()
     activeVenues = [venue for venue in venues if venue["active"]]
     return activeVenues
 
 def get_deactive_venues():
+    """Devuelve los venues inactivos.
+
+    Retorna:
+        list: venues inactivos.
+    """
     venues = venue_repository.load_venues()
     deactiveVenues = [venue for venue in venues if not venue["active"]]
     return deactiveVenues       
@@ -19,6 +34,14 @@ def get_deactive_venues():
 
 
 def get_venue_by_id(venueId):
+    """Busca un venue por ID.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+
+    Retorna:
+        dict: el venue encontrado.
+    """
     venues = venue_repository.load_venues()
     for venue in venues:
         if venue["id"] == venueId:
@@ -28,6 +51,17 @@ def get_venue_by_id(venueId):
 
 
 def create_venue(name, address, time_slots, sectors):
+    """Registra un venue con horarios y sectores.
+
+    Parámetros:
+        name (str): nombre del venue.
+        address (str): dirección.
+        time_slots (list): horarios en formato HH:MM.
+        sectors (dict): sectores generales o numerados.
+
+    Retorna:
+        dict: el venue creado.
+    """
     venues = venue_repository.load_venues()
     for venue in venues:
         if venue["name"].lower() == name.lower():
@@ -50,6 +84,16 @@ def create_venue(name, address, time_slots, sectors):
 
 
 def update_venue_by_id(venueId, newName, newAddress):
+    """Actualiza el nombre y la dirección de un venue.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        newName (str): nuevo nombre.
+        newAddress (str): nueva dirección.
+
+    Retorna:
+        dict: el venue actualizado.
+    """
     venues = venue_repository.load_venues()
     for venue in venues:
         if venue["name"].lower() == newName.lower() and venue["id"] != venueId:
@@ -66,6 +110,15 @@ def update_venue_by_id(venueId, newName, newAddress):
 
 
 def add_venue_time_slot(venueId, timeSlot):
+    """Agrega un horario al venue.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        timeSlot (str): horario en formato HH:MM.
+
+    Retorna:
+        dict: el venue actualizado.
+    """
     venues = venue_repository.load_venues()
 
     for venue in venues:
@@ -81,6 +134,15 @@ def add_venue_time_slot(venueId, timeSlot):
 
 
 def remove_venue_time_slot(venueId, timeSlot):
+    """Elimina un horario del venue, dejando al menos uno.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        timeSlot (str): horario a eliminar.
+
+    Retorna:
+        dict: el venue actualizado.
+    """
     venues = venue_repository.load_venues()
 
     for venue in venues:
@@ -100,6 +162,16 @@ def remove_venue_time_slot(venueId, timeSlot):
 
 
 def add_venue_sector(venueId, sectorName, sectorData):
+    """Agrega un sector al venue.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        sectorName (str): nombre del sector.
+        sectorData (dict): tipo y capacidad, o filas y columnas.
+
+    Retorna:
+        dict: el venue actualizado.
+    """
     venues = venue_repository.load_venues()
     for venue in venues:
         if venue["id"] == venueId:
@@ -115,6 +187,15 @@ def add_venue_sector(venueId, sectorName, sectorData):
 
 
 def remove_venue_sector(venueId, sectorName):
+    """Elimina un sector del venue, dejando al menos uno.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        sectorName (str): nombre del sector.
+
+    Retorna:
+        dict: el venue actualizado.
+    """
     venues = venue_repository.load_venues()
 
     for venue in venues:
@@ -134,6 +215,16 @@ def remove_venue_sector(venueId, sectorName):
 
 
 def update_venue_sector(venueId, sectorName, sectorData):
+    """Actualiza la capacidad o la grilla de un sector.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        sectorName (str): nombre del sector.
+        sectorData (dict): nuevos datos del sector.
+
+    Retorna:
+        dict: el venue actualizado.
+    """
     venues = venue_repository.load_venues()
 
     for venue in venues:
@@ -162,6 +253,14 @@ def update_venue_sector(venueId, sectorName, sectorData):
 
 
 def deactivate_venue(venueId):
+    """Marca un venue como inactivo.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+
+    Retorna:
+        dict: el venue inactivado.
+    """
     venues = venue_repository.load_venues()
 
     for venue in venues:
@@ -176,6 +275,14 @@ def deactivate_venue(venueId):
     raise LookupError(f"No existe un venue con ID: {venueId}")
 
 def activate_venue(venueId):
+    """Marca un venue como activo.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+
+    Retorna:
+        dict: el venue activado.
+    """
     venues = venue_repository.load_venues()
     for venue in venues:
         if venue["id"] == venueId:
@@ -188,6 +295,14 @@ def activate_venue(venueId):
 
 
 def delete_venue(venueId):
+    """Elimina un venue que no tenga eventos asociados.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+
+    Retorna:
+        dict: el venue eliminado.
+    """
     venues = venue_repository.load_venues()
     events = event_repository.load_events()
 

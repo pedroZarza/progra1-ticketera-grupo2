@@ -8,64 +8,22 @@
     },
     {
         "id": 2,
-        "username": "organizador1",
-        "password": "org123",
-        "role": "organizer",
-        "active": true
-    },
-    {
-        "id": 3,
-        "username": "pedro123",
-        "password": "74dfa6fabf9d0f3737eadf10ff8d0a3fe7271390aae8312235429bc7c49302a6",
-        "role": "customer",
-        "active": false
-    },
-    {
-        "id": 4,
-        "username": "juan carlos organizador",
-        "password": "org123",
-        "role": "organizer",
-        "active": true
-    },
-    {
-        "id": 5,
-        "username": "jorge",
-        "password": "org123",
-        "role": "organizer",
-        "active": true
-    },
-    {
-        "id": 6,
         "username": "PEDRO",
         "password": "4f8805b4d71c54d5f9498fbe521433f4e26b9cdf4955b7470da4d7ab215f4407",
         "role": "customer",
         "active": true
     },
     {
-        "id": 7,
-        "username": "ALDO",
-        "password": "10fcb02ab2126b72f7f683987f0067c1d9394299fe6d50ae0a0bcbd90bc6e9ff",
+        "id": 3,
+        "username": "LICHA",
+        "password": "76fd9fec5413f7677a61f7254617fdd67c7dd478b4bad4784e9e0ffb75b53d09",
         "role": "organizer",
         "active": true
     },
     {
-        "id": 8,
-        "username": "JUAN",
-        "password": "50efaf6a539b9529971b32b24f6ecd82b6847d3469cc77722eba58dceec4e8d9",
-        "role": "customer",
-        "active": true
-    },
-    {
-        "id": 9,
-        "username": "CHABAN",
-        "password": "c3e229de130e18700a7b138f70ba1d0faa797109731a2c539af9241c504b4054",
-        "role": "organizer",
-        "active": true
-    },
-    {
-        "id": 10,
-        "username": "GUSTAVO",
-        "password": "ead3ba768ef64d9d8da9477d43ce001e081e8864c89edd448198b0bc4a599efc",
+        "id": 4,
+        "username": "JORGE",
+        "password": "79d5cb473f5ec3df046719589698948a989145565cd015ed38b376b2e6ae12a0",
         "role": "customer",
         "active": true
     }

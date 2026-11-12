@@ -5,6 +5,11 @@ from functools import reduce
 
 
 def get_active_events():
+    """Devuelve los eventos activos y futuros, ordenados por fecha.
+
+    Retorna:
+        list: eventos activos todavía no realizados.
+    """
     events = event_repository.load_events()
     activeEvents = []
     currentDate = datetime.now()
@@ -22,6 +27,11 @@ def get_active_events():
 
 
 def get_events_available_for_purchase():
+    """Devuelve los eventos activos que todavía tienen entradas.
+
+    Retorna:
+        list: eventos con lugares libres.
+    """
     events = get_active_events()
     availableEvents = []
 
@@ -34,6 +44,14 @@ def get_events_available_for_purchase():
 
 
 def has_availability(event):
+    """Indica si algún sector del evento tiene lugares libres.
+
+    Parámetros:
+        event (dict): evento a consultar.
+
+    Retorna:
+        bool: True si queda disponibilidad.
+    """
     for sector in event["sectors"].values():
         if "capacity" in sector and sector["sold"] < sector["capacity"]:
             return True
@@ -46,6 +64,14 @@ def has_availability(event):
 
 
 def get_event_by_id(eventId):
+    """Busca un evento activo por ID.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+
+    Retorna:
+        dict: el evento activo.
+    """
     activeEvents = get_active_events()
     for event in activeEvents:
         if event["id"] == eventId:
@@ -54,6 +80,14 @@ def get_event_by_id(eventId):
 
 
 def get_any_event_by_id(eventId):
+    """Busca un evento por ID, sin filtrar por estado.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+
+    Retorna:
+        dict: el evento encontrado.
+    """
     events = event_repository.load_events()
     for event in events:
         if event["id"] == eventId:
@@ -61,6 +95,14 @@ def get_any_event_by_id(eventId):
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
 def get_events_by_search(query):
+    """Filtra eventos activos por nombre, descripción, venue o categoría.
+
+    Parámetros:
+        query (str): texto a buscar.
+
+    Retorna:
+        list: eventos que coinciden.
+    """
     events = get_active_events()
     q = query.lower()
     matchEvents = list(
@@ -76,6 +118,14 @@ def get_events_by_search(query):
 
 
 def get_events_by_category(categories):
+    """Filtra eventos activos que coinciden con alguna categoría.
+
+    Parámetros:
+        categories (list): nombres de categoría en minúsculas.
+
+    Retorna:
+        list: eventos que coinciden.
+    """
     events = get_active_events()
     matchEvents = []
     for event in events:
@@ -87,6 +137,14 @@ def get_events_by_category(categories):
 
 
 def get_events_by_organizer(organizerId):
+    """Devuelve los eventos activos de un organizador.
+
+    Parámetros:
+        organizerId (int): identificador del organizador.
+
+    Retorna:
+        list: eventos activos del organizador.
+    """
     events = get_active_events()
     organizerEvents = []
     for event in events:
@@ -96,6 +154,15 @@ def get_events_by_organizer(organizerId):
 
 
 def get_event_by_organizer(organizerId, eventId):
+    """Busca un evento activo que pertenezca al organizador.
+
+    Parámetros:
+        organizerId (int): identificador del organizador.
+        eventId (int): identificador del evento.
+
+    Retorna:
+        dict: el evento activo del organizador.
+    """
     events = get_events_by_organizer(organizerId)
     for event in events:
         if event["id"] == eventId:
@@ -104,6 +171,14 @@ def get_event_by_organizer(organizerId, eventId):
 
 
 def get_all_events_by_organizer(organizerId):
+    """Devuelve todos los eventos de un organizador.
+
+    Parámetros:
+        organizerId (int): identificador del organizador.
+
+    Retorna:
+        list: eventos del organizador, ordenados por fecha.
+    """
     events = event_repository.load_events()
     organizerEvents = []
     for event in events:
@@ -113,6 +188,15 @@ def get_all_events_by_organizer(organizerId):
     return organizerEvents
 
 def get_any_event_by_organizer(organizerId, eventId):
+    """Busca cualquier evento del organizador por ID.
+
+    Parámetros:
+        organizerId (int): identificador del organizador.
+        eventId (int): identificador del evento.
+
+    Retorna:
+        dict: el evento del organizador.
+    """
     events = get_all_events_by_organizer(organizerId)
     for event in events:
         if event["id"] == eventId:
@@ -121,6 +205,14 @@ def get_any_event_by_organizer(organizerId, eventId):
 
 
 def get_events_history(organizerId):
+    """Devuelve los eventos cancelados o ya ocurridos del organizador.
+
+    Parámetros:
+        organizerId (int): identificador del organizador.
+
+    Retorna:
+        list: historial ordenado del más reciente al más antiguo.
+    """
     events = event_repository.load_events()
     history = []
     currentDate = datetime.now()
@@ -137,6 +229,15 @@ def get_events_history(organizerId):
 
 
 def get_available_time_slots(venueId, date):
+    """Lista los horarios libres de un venue en una fecha.
+
+    Parámetros:
+        venueId (int): identificador del venue.
+        date (str): fecha en formato DD/MM/AAAA.
+
+    Retorna:
+        list: horarios disponibles, en formato HH:MM.
+    """
     venue = venue_service.get_venue_by_id(venueId)
     if venue["active"] == False:
         raise ValueError("El venue seleccionado está inactivo.")
@@ -165,6 +266,20 @@ def get_available_time_slots(venueId, date):
 
 
 def create_event(organizerId, name, description, date, time, selectedCategories, venueId):
+    """Crea un evento activo y copia los sectores del venue.
+
+    Parámetros:
+        organizerId (int): identificador del organizador.
+        name (str): nombre del evento.
+        description (str): descripción del evento.
+        date (str): fecha en formato DD/MM/AAAA.
+        time (str): horario en formato HH:MM.
+        selectedCategories (list): categorías del evento.
+        venueId (int): identificador del venue.
+
+    Retorna:
+        dict: el evento creado.
+    """
     venue = venue_service.get_venue_by_id(venueId)
     if venue["active"] == False:
         raise ValueError("El venue seleccionado está inactivo.")
@@ -222,6 +337,17 @@ def create_event(organizerId, name, description, date, time, selectedCategories,
 
 
 def restore_event_availability(eventId, sectorName, quantity, seats):
+    """Devuelve entradas o butacas al cancelar una compra.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        sectorName (str): sector de la orden.
+        quantity (int): cantidad de entradas a devolver.
+        seats (list): butacas a liberar, cada una como [fila, columna].
+
+    Retorna:
+        dict: el evento actualizado.
+    """
     event = get_event_by_id(eventId)
     events = event_repository.load_events()
     for storedEvent in events:
@@ -239,6 +365,16 @@ def restore_event_availability(eventId, sectorName, quantity, seats):
 
 
 def update_sector_price(eventId, sectorName, price):
+    """Actualiza el precio de un sector del evento.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        sectorName (str): nombre del sector.
+        price (float): nuevo precio.
+
+    Retorna:
+        dict: el evento actualizado.
+    """
     event = get_event_by_id(eventId)
     if sectorName not in event["sectors"]:
         raise ValueError(f"El sector {sectorName} no existe.")
@@ -254,6 +390,15 @@ def update_sector_price(eventId, sectorName, price):
 
 
 def add_event_category(eventId, category):
+    """Agrega una categoría al evento si todavía no la tiene.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        category (str): categoría a asignar.
+
+    Retorna:
+        dict: el evento actualizado.
+    """
     event = get_event_by_id(eventId)
     for existingCategory in event["categories"]:
         if existingCategory.lower() == category.lower():
@@ -268,6 +413,15 @@ def add_event_category(eventId, category):
 
 
 def remove_event_category(eventId, category):
+    """Quita una categoría del evento, dejando al menos una.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        category (str): categoría a quitar.
+
+    Retorna:
+        dict: el evento actualizado.
+    """
     event = get_event_by_id(eventId)
     if len(event["categories"]) == 1:
         raise ValueError("El evento debe conservar al menos una categoría.")
@@ -290,6 +444,17 @@ def remove_event_category(eventId, category):
 
 
 def update_event_info(eventId, organizerId, name, description):
+    """Actualiza nombre y descripción si el evento es del organizador.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        organizerId (int): identificador del organizador.
+        name (str): nuevo nombre.
+        description (str): nueva descripción.
+
+    Retorna:
+        dict: el evento actualizado.
+    """
     event = get_event_by_id(eventId)
     if event["organizerId"] != organizerId:
         raise PermissionError("El evento no pertenece al organizador.")
@@ -306,6 +471,15 @@ def update_event_info(eventId, organizerId, name, description):
 
 
 def cancel_event(eventId, organizerId):
+    """Cancela el evento si es del organizador y no tiene órdenes activas.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+        organizerId (int): identificador del organizador.
+
+    Retorna:
+        dict: el evento cancelado.
+    """
     event = get_event_by_id(eventId)
     orders = order_service.get_active_orders_by_event_id(eventId)
     if len(orders) > 0:
@@ -324,6 +498,14 @@ def cancel_event(eventId, organizerId):
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
 def get_event_orders(eventId):
+    """Devuelve las órdenes activas de un evento.
+
+    Parámetros:
+        eventId (int): identificador del evento.
+
+    Retorna:
+        list: órdenes activas del evento.
+    """
     orders = order_service.get_active_orders_by_event_id(eventId)
     if len(orders) == 0:
         raise LookupError(f"El evento con id '{eventId}' no posee órdenes activas.")

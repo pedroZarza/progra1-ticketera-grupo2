@@ -2,6 +2,11 @@ from utils.messages import show_error
 from handlers import event_handlers
 
 def show_organizer_menu(user):
+    """Muestra el menú del organizador y ejecuta la opción elegida.
+
+    Parámetros:
+        user (dict): organizador autenticado.
+    """
     while True:
         print("\n==========================================================\n")
         print("EVENTPASS - ORGANIZER PANEL".center(58))
@@ -18,6 +23,7 @@ def show_organizer_menu(user):
         print("9. Ver órdenes activas de un evento")
         print("10. Ver resumen de ventas y disponibilidad de un evento")
         print("11. Ver historial de eventos publicados")
+        print("12. Generar reporte de ventas de un evento")
         print("0. Cerrar sesión")    
         print("----------------------------------------------------------")
         option = input(">>> ")
@@ -48,8 +54,8 @@ def show_organizer_menu(user):
                 event_handlers.view_event_sales_summary(user)
             case "11":
                 event_handlers.view_event_history(user)
-            case "11":
-                pass  # event_handler.generate_sales_report()
+            case "12":
+                event_handlers.generate_sales_report(user)
             case "0":
                 break
             case _:

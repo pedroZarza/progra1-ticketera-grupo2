@@ -4,6 +4,7 @@ from utils.messages import show_error, show_success, show_info
 
 
 def show_categories():
+    """Lista las categorías disponibles."""
     categories = service.get_categories()
     if len(categories) == 0:
         show_info("No hay categorías disponibles.")
@@ -15,6 +16,7 @@ def show_categories():
     return
     
 def create_category():
+    """Registra una categoría nueva."""
     operationSuccess = False
     while not operationSuccess:
         category = input_helpers.prompt_non_empty_field("\nIngrese el nombre de la categoría: ")
@@ -32,6 +34,7 @@ def create_category():
     return
               
 def delete_category():
+    """Elimina una categoría por nombre."""
     operationSuccess = False
     categories = service.get_categories()
     if len(categories) == 0:
