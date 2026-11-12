@@ -9,16 +9,15 @@ def show_organizer_menu(user):
         print("\n==========================================================")
         print("1. Crear evento")
         print("2. Ver mis eventos publicados")
-        print("3. Definir precios por sector")
-        print("4. Modificar evento")
-        print("5. Asignar categoría a un evento")
-        print("6. Ver estado de ventas y disponibilidad de un evento")
+        print("3. Ver detalle de un evento publicado")
+        print("4. Definir precios por sector")
+        print("5. Editar información de un evento")
+        print("6. Asignar categoría a un evento")
+        print("7. Eliminar categoría de un evento")
+        print("8. Cancelar evento")
+        print("9. Ver estado de ventas y disponibilidad de un evento")
+        print("10. Ver historial de eventos publicados")
         print("0. Cerrar sesión")    
-        # print("6. Cancelar evento")
-        # print("7. Posponer evento")
-        # print("8. Habilitar / deshabilitar venta de tickets")
-        # print("10. Ver detalle de órdenes de compra de un evento")
-        # print("11. Ver mis estadísticas")
         print("----------------------------------------------------------")
         option = input(">>> ")
         
@@ -29,26 +28,25 @@ def show_organizer_menu(user):
             case "1":
                 event_handlers.create_new_event(user)
             case "2":
-                pass
+                event_handlers.view_my_events(user)
             case "3":
-                event_handlers.edit_event_prices(user)
+                event_handlers.show_organizer_event_detail(user)
             case "4":
-                pass
+                event_handlers.edit_event_prices(user)
             case "5":
-               pass                         
+                event_handlers.edit_event_info(user)
             case "6":
-               pass
+                event_handlers.assign_event_category(user)
             case "7":
-                pass
+                event_handlers.remove_event_category(user)
             case "8":
-              pass
+                event_handlers.cancel_event(user)
             case "9":
-                pass  # event_handler.view_sales_status()
+                # event_handlers.view_event_sales(user)
+                pass
             case "10":
-                pass  # event_handler.view_order_details()
+                event_handlers.view_event_history(user)
             case "11":
-                pass  # event_handler.view_my_statistics()
-            case "12":
                 pass  # event_handler.generate_sales_report()
             case "0":
                 break
