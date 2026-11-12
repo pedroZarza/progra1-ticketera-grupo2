@@ -19,13 +19,11 @@ def show_admin_menu(user):
         print("10. Inactivar venue")
         print("11. Activar venue")
         print("12. Eliminar venue")
-        #print("8. Consultar estadísticas por venue")
         print("13. Dar de alta un usuario (organizador o comprador)")           
-        #print("9. Consultar calendario de venues")
+        print("14. Inactivar un usuario")
+        print("15. Activar un usuario")
+        print("16. Restablecer contraseña de un usuario")
         print("0. Cerrar sesión")  
-        # print("8. Gestionar usuarios (consultar / inactivar / restablecer contraseña)")
-        # print("9. Gestionar eventos (consultar / deshabilitar / eliminar / historial)")
-        # print("10. Consultar estadísticas generales de la plataforma")
         print("----------------------------------------------------------")
         option = input(">>> ")
         
@@ -59,6 +57,12 @@ def show_admin_menu(user):
                 venue_handlers.delete_venue()
             case "13":
                 user_handlers.register_user()
+            case "14":
+                user_handlers.deactivate_user()
+            case "15":
+                user_handlers.activate_user()
+            case "16":
+                user_handlers.reset_password()
             case "0":
                 break
             case _:
