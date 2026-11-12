@@ -2,7 +2,7 @@
     {
         "id": 1,
         "name": "Noches de Rock",
-        "datetime": "2026-12-15T21:30",
+        "datetime": "2026-11-12T21:30",
         "venue": "Movistar Arena",
         "venueId": 1,
         "categories": [
@@ -10,13 +10,13 @@
             "Rock"
         ],
         "description": "Festival de rock con bandas nacionales invitadas.",
-        "organizerId": 4,
-        "status": "active",
+        "organizerId": 7,
+        "status": "cancelled",
         "sectors": {
             "Campo": {
                 "price": 15000,
                 "capacity": 200,
-                "sold": 85
+                "sold": 87
             },
             "Platea": {
                 "price": 25000,
@@ -113,7 +113,7 @@
     },
     {
         "id": 3,
-        "name": "Stand Up Night",
+        "name": "STAND UP FEST",
         "datetime": "2026-12-08T20:00",
         "venue": "Estadio Obras",
         "venueId": 3,
@@ -121,8 +121,8 @@
             "Comedia",
             "Stand Up"
         ],
-        "description": "Noche de stand up con comediantes invitados.",
-        "organizerId": 5,
+        "description": "Festival stand up",
+        "organizerId": 7,
         "status": "active",
         "sectors": {
             "Campo": {
@@ -261,7 +261,7 @@
         ],
         "description": "un evento",
         "organizerId": 7,
-        "status": "active",
+        "status": "cancelled",
         "sectors": {
             "Campo": {
                 "price": 1000.0,
@@ -288,7 +288,7 @@
     {
         "id": 7,
         "name": "Jonnhy Marr Argentina",
-        "datetime": "2023-11-26T22:00",
+        "datetime": "2025-11-26T22:00",
         "venue": "Complejo C art media",
         "venueId": 5,
         "categories": [
@@ -302,7 +302,7 @@
             "campo general": {
                 "price": 126000.0,
                 "capacity": 3000,
-                "sold": 0
+                "sold": 3
             },
             "vip": {
                 "price": 250000.0,

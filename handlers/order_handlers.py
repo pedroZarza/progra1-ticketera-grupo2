@@ -1,212 +1,193 @@
 from utils import input_helpers, layout_helpers
 from services import event_service, order_service
-from utils.messages import show_error, show_success, show_info, show_warning
+from utils.messages import show_error, show_success, show_info
 from datetime import datetime
+
 
 def buy_tickets(user):
     events = event_service.get_active_events()
     if len(events) == 0:
         show_info("No hay eventos disponibles.")
         return
-    
+
     layout_helpers.events_board(events)
-    
-    operationSuccess = False
 
-    while not operationSuccess:
-        event_id = input_helpers.prompt_positive_number(
-            "\nIngrese el ID del evento: "
-        )
+    eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento: ")
+    if eventId == "q":
+        return
 
-        if event_id == "q":
-            return
-
-        try:
-            event = event_service.get_event_by_id(event_id)
-            operationSuccess = True
-
-        except LookupError as error:
-            show_error(f"{error}")
-
-            response = input(
-                "\nPresiona ENTER para volver a intentar "
-                "o q para cancelar la operación..."
-            )
-
-            if response.strip().lower() == "q":
-                return
+    try:
+        event = event_service.get_event_by_id(eventId)
+    except LookupError as error:
+        show_error(f"{error}")
+        return
 
     eventDatetime = datetime.fromisoformat(event["datetime"])
     formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
 
     print(f"\nSELECCIÓN DE SECTOR | {event['name']} - {formattedDatetime}")
     print(event["description"])
+    for sectorName, sector in event["sectors"].items():
+        if sector["price"] is None:
+            print(f"- {sectorName}: No definido")
+        else:
+            print(f"- {sectorName}: ${sector['price']:.2f}")
 
-    for sector_name, sector in event["sectors"].items():
-        print(f"- {sector_name}: ${sector['price']}")
-        
-    selected_sector = None
-    while selected_sector is None:
-        sector_name = input_helpers.prompt_non_empty_field(
-            "\nIngrese el nombre del sector: "
-        )
-        if sector_name.lower() == "q":
+    selectedSector = None
+    while selectedSector is None:
+        sectorName = input_helpers.prompt_non_empty_field("\nIngrese el nombre del sector: ")
+        if sectorName.lower() == "q":
             return
-        
-        for name, sector in event["sectors"].items():
-            if name.lower() == sector_name.lower():
-                selected_sector = name
+
+        for name in event["sectors"]:
+            if name.lower() == sectorName.lower():
+                selectedSector = name
                 break
-        if selected_sector is None:
+
+        if selectedSector is None:
             show_error("No existe un sector con ese nombre.")
-    
-    
-    sector = event["sectors"][selected_sector]
-    if sector["price"] is None:
+
+    sector = event["sectors"][selectedSector]
+    if sector.get("price") is None:
         show_error("El sector seleccionado no tiene precio definido.")
         return
-    selected_seats = []
+
+    selectedSeats = []
+
     if "capacity" in sector:
         available = sector["capacity"] - sector["sold"]
-
         if available <= 0:
             show_error("El sector está agotado.")
             return
 
         print(f"\nEntradas disponibles: {available}")
-
         while True:
-            quantity = input_helpers.prompt_positive_number(
-                "Cantidad de entradas: "
-            )
-
+            quantity = input_helpers.prompt_positive_number("Cantidad de entradas: ")
+            if quantity == "q":
+                return
             if quantity <= available:
                 break
-
             show_error(
-                f"No hay suficientes entradas disponibles. "
-                f"Disponibles: {available}"
+                f"No hay suficientes entradas disponibles. Disponibles: {available}"
             )
-            
-        
-    else:
-        available_seats = []
-        for i in range(len(sector["seats"])):
-            for j in range(len(sector["seats"][i])):
-                if sector["seats"][i][j] == "free":
-                    available_seats.append([i, j])
 
-        if len(available_seats) == 0:
+    elif "seats" in sector:
+        availableSeats = []
+        for rowIndex, row in enumerate(sector["seats"]):
+            for columnIndex, seat in enumerate(row):
+                if seat == "free":
+                    availableSeats.append([rowIndex, columnIndex])
+
+        if len(availableSeats) == 0:
             show_error("No hay butacas disponibles en este sector.")
             return
-        
+
         print("\nBUTACAS DISPONIBLES")
-
-        for i in range(len(available_seats)):
-            row = available_seats[i][0]
-            column = available_seats[i][1]
-
-            print(f"{i + 1}. Fila {row + 1} - Butaca {column + 1}")
+        for index, seat in enumerate(availableSeats, start=1):
+            print(f"{index}. Fila {seat[0] + 1} - Butaca {seat[1] + 1}")
 
         while True:
             quantity = input_helpers.prompt_positive_number("\n¿Cuántas butacas desea comprar?: ")
-            if quantity <= len(available_seats):
+            if quantity == "q":
+                return
+            if quantity <= len(availableSeats):
                 break
+            show_error(f"Solo hay {len(availableSeats)} butacas disponibles.")
 
-            show_error(f"Solo hay {len(available_seats)} butacas disponibles.")
+        while len(selectedSeats) < quantity:
+            seatOption = input_helpers.prompt_positive_number(
+                f"\nSeleccione la butaca {len(selectedSeats) + 1}/{quantity}: "
+            )
+            if seatOption == "q":
+                return
+            if seatOption > len(availableSeats):
+                show_error("Seleccione una butaca válida.")
+                continue
 
-        for i in range(quantity):
-            while True:
-                seat_option = input_helpers.prompt_positive_number(f"\nSeleccione la butaca {i + 1}/{quantity}: ")
+            selectedSeat = availableSeats[seatOption - 1]
+            if selectedSeat in selectedSeats:
+                show_error("Ya seleccionó esa butaca.")
+                continue
 
-                if seat_option > len(available_seats):
-                    show_error("Seleccione una butaca válida.")
-                    continue
+            selectedSeats.append(selectedSeat)
 
-                selected_seat = available_seats[seat_option - 1]
+    else:
+        show_error("El sector seleccionado tiene una configuración inválida.")
+        return
 
-                if selected_seat in selected_seats:
-                    show_error("Ya seleccionó esa butaca.")
-                    continue
-
-                selected_seats.append(selected_seat)
-                break
-        
     total = sector["price"] * quantity
-    print("\n=====RESUMEN DE COMPRA=====")
-    print(f"Evento: {event['name']}")
-    print(f"Sector: {selected_sector}")
-    print(f"Cantidad de entradas: {quantity}")
+    layout_helpers.purchase_summary(event, selectedSector, quantity, selectedSeats, total)
 
-    if len(selected_seats) > 0:
-        print("Butacas seleccionadas:")
-
-        for seat in selected_seats:
-            print(f"- Fila {seat[0] + 1} - Butaca {seat[1] + 1}")
-
-    print(f"Total: ${total}")
-    
     while True:
-        confirmation = input("\n¿Confirmar compra? (s/n): ").lower()
-
+        confirmation = input("\n¿Confirmar compra? (s/n): ").strip().lower()
         if confirmation == "s" or confirmation == "n":
             break
-
         show_error("Ingrese 's' o 'n'.")
 
     if confirmation == "n":
         show_info("Compra cancelada.")
-        return   
-        
+        input("\nPresiona ENTER para volver al menú principal...")
+        return
+
     newOrderData = {
         "customer_id": user["id"],
         "event_id": event["id"],
         "event_name": event["name"],
         "event_datetime": event["datetime"],
-        "sector": selected_sector,
+        "sector": selectedSector,
         "quantity": quantity,
-        "seats": selected_seats,
+        "seats": selectedSeats,
         "total": total,
-        "status": "active",
-        "purchase_date": datetime.now().strftime("%d/%m/%Y %H:%M")
-    }   
+        "active": True,
+        "purchase_date": datetime.now().strftime("%Y-%m-%dT%H:%M"),
+    }
 
     try:
         order = order_service.create_order(newOrderData)
-
-        show_success(
-            f"Compra realizada exitosamente. Orden #{order['id']}"
-        )
-
+        show_success(f"Compra realizada exitosamente. Orden #{order['id']}")
     except (ValueError, LookupError) as error:
         show_error(f"{error}")
-                
+    input("\nPresiona ENTER para volver al menú principal...")
+
 def show_user_orders(user):
     orders = order_service.get_orders_by_customer(user["id"])
+    layout_helpers.user_orders(orders)
+    input("\nPresiona ENTER para volver al menú principal...")
 
-    if len(orders) == 0:
-        show_info("No tiene tickets comprados.")
+
+def cancel_order(user):
+    orders = order_service.get_orders_by_customer(user["id"])
+    activeOrders = []
+    for order in orders:
+        if order["active"]:
+            activeOrders.append(order)
+
+    if len(activeOrders) == 0:
+        show_info("No tiene órdenes activas para cancelar.")
+        input("\nPresiona ENTER para volver al menú principal...")
         return
 
-    print("\n=====MIS TICKETS=====")
+    layout_helpers.user_orders(activeOrders)
 
-    for order in orders:
+    orderId = input_helpers.prompt_positive_number("\nIngrese el ID de la orden que desea cancelar: ")
+    if orderId == "q":
+        return
 
-        print(f"\nOrden #{order['id']}")
-        print(f"Evento: {order['event_name']}")
-        print(f"Sector: {order['sector']}")
-        print(f"Cantidad de tickets: {order['quantity']}")
-        print(f"Fecha de compra: {order['purchase_date']}")
+    while True:
+        confirmation = input("\n¿Confirmar cancelación? (s/n): ").strip().lower()
+        if confirmation == "s" or confirmation == "n":
+            break
+        show_error("Ingrese 's' o 'n'.")
 
-        if len(order["seats"]) > 0:
-            print("Butacas:")
+    if confirmation == "n":
+        show_info("La orden no fue cancelada.")
+        input("\nPresiona ENTER para volver al menú principal...")
+        return
 
-            for seat in order["seats"]:
-                print(f"- Fila {seat[0] + 1} - Butaca {seat[1] + 1}")
+    try:
+        order_service.cancel_order(orderId, user["id"])
+        show_success(f"Orden #{orderId} cancelada exitosamente.")
+    except (ValueError, LookupError, PermissionError) as error:
+        show_error(f"{error}")
 
-        print(f"Total: ${order['total']}")
-        print(f"Estado: {order['status']}")
-        print("----------------------------------------------------------")
-        
     input("\nPresiona ENTER para volver al menú principal...")
-    return

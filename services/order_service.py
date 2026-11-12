@@ -1,5 +1,6 @@
 from repositories import orders_repository, event_repository
-from datetime import datetime
+from services import event_service
+from datetime import datetime, timedelta
 
 
 def create_order(newOrderData):
@@ -32,12 +33,6 @@ def create_order(newOrderData):
         raise ValueError("El sector seleccionado no existe.")
 
     sector = event["sectors"][sectorName]
-
-    if sector["price"] is None:
-        raise ValueError(
-            "El sector seleccionado no tiene precio definido."
-        )
-
     quantity = newOrderData["quantity"]
 
     if quantity <= 0:
@@ -98,12 +93,62 @@ def create_order(newOrderData):
     return newOrderData
 
 
-def get_orders_by_customer(customer_id):
+def cancel_order(orderId, customerId):
+    orders = orders_repository.load_orders()
+
+    order = None
+    for storedOrder in orders:
+        if storedOrder["id"] == orderId:
+            order = storedOrder
+            break
+
+    if order is None:
+        raise LookupError(f"No existe una orden con id '{orderId}'")
+
+    if order["customer_id"] != customerId:
+        raise PermissionError("La orden no pertenece al usuario.")
+
+    if order["active"] == False:
+        raise ValueError("La orden ya se encuentra cancelada.")
+
+    orderEvent = event_service.get_any_event_by_id(order["event_id"])
+    eventDate = datetime.fromisoformat(orderEvent["datetime"])
+
+    if orderEvent["status"] == "cancelled":
+        raise ValueError("No se puede cancelar la orden debido a que el evento se encuentra cancelado.")
+
+    if eventDate - datetime.now() < timedelta(days=1):
+        raise ValueError("No se puede cancelar la orden con menos de (1) día/s de anticipación al comienzo del evento.")
+
+    event_service.restore_event_availability(
+        order["event_id"],
+        order["sector"],
+        order["quantity"],
+        order["seats"],
+    )
+
+    order["active"] = False
+    orders_repository.save_orders(orders)
+    return order
+
+
+def get_orders_by_customer(customerId):
     orders = orders_repository.load_orders()
     customerOrders = []
 
     for order in orders:
-        if order["customer_id"] == customer_id:
+        if order["customer_id"] == customerId:
             customerOrders.append(order)
 
     return customerOrders
+
+
+def get_active_orders_by_event_id(eventId):
+    orders = orders_repository.load_orders()
+    activeOrders = []
+    for storedOrder in orders:
+        if storedOrder["event_id"] == eventId and storedOrder["active"]:
+            activeOrders.append(storedOrder)
+    return activeOrders
+
+    
