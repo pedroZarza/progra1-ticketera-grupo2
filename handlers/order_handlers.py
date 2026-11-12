@@ -11,14 +11,30 @@ def buy_tickets(user):
     
     layout_helpers.events_board(events)
     
-    event_id = input_helpers.prompt_non_empty_field("\nIngrese el ID del evento: ")
-    if event_id.lower() == "q": return
+    operationSuccess = False
 
-    event = event_service.get_active_event_by_id(event_id)
-    
-    if event is None:
-        show_error("No existe un evento con ese ID.")
-        return
+    while not operationSuccess:
+        event_id = input_helpers.prompt_positive_number(
+            "\nIngrese el ID del evento: "
+        )
+
+        if event_id == "q":
+            return
+
+        try:
+            event = event_service.get_event_by_id(event_id)
+            operationSuccess = True
+
+        except LookupError as error:
+            show_error(f"{error}")
+
+            response = input(
+                "\nPresiona ENTER para volver a intentar "
+                "o q para cancelar la operación..."
+            )
+
+            if response.strip().lower() == "q":
+                return
 
     eventDatetime = datetime.fromisoformat(event["datetime"])
     formattedDatetime = eventDatetime.strftime("%d/%m/%Y %H:%M")
@@ -46,6 +62,9 @@ def buy_tickets(user):
     
     
     sector = event["sectors"][selected_sector]
+    if sector["price"] is None:
+        show_error("El sector seleccionado no tiene precio definido.")
+        return
     selected_seats = []
     if "capacity" in sector:
         available = sector["capacity"] - sector["sold"]
@@ -151,22 +170,16 @@ def buy_tickets(user):
         "status": "active",
         "purchase_date": datetime.now().strftime("%d/%m/%Y %H:%M")
     }   
-    availability_updated = event_service.update_event_availability_service(
-    event["id"],
-    selected_sector,
-    quantity,
-    selected_seats
-    )
 
-    if availability_updated == False:
-        show_error("No se pudo actualizar la disponibilidad.")
-        return
+    try:
+        order = order_service.create_order(newOrderData)
 
-    success, order = order_service.create_order(newOrderData)
+        show_success(
+            f"Compra realizada exitosamente. Orden #{order['id']}"
+        )
 
-    if success:
-        show_success(f"Compra realizada exitosamente. Orden #{order['id']}")
-
+    except (ValueError, LookupError) as error:
+        show_error(f"{error}")
                 
 def show_user_orders(user):
     orders = order_service.get_orders_by_customer(user["id"])
