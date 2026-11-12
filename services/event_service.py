@@ -1,5 +1,5 @@
 from repositories import event_repository
-from services import venue_service
+from services import venue_service, order_service
 from datetime import datetime
 from functools import reduce
 
@@ -52,6 +52,14 @@ def get_event_by_id(eventId):
             return event
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
+
+def get_any_event_by_id(eventId):
+    events = event_repository.load_events()
+    for event in events:
+        if event["id"] == eventId:
+            return event
+    raise LookupError(f"No existe un evento con id '{eventId}'")
+
 def get_events_by_search(query):
     events = get_active_events()
     q = query.lower()
@@ -95,6 +103,23 @@ def get_event_by_organizer(organizerId, eventId):
     raise LookupError(f"No posee un evento registrado con id '{eventId}'")
 
 
+def get_all_events_by_organizer(organizerId):
+    events = event_repository.load_events()
+    organizerEvents = []
+    for event in events:
+        if event["organizerId"] == organizerId:
+            organizerEvents.append(event)
+    organizerEvents.sort(key=lambda event: event["datetime"])
+    return organizerEvents
+
+def get_any_event_by_organizer(organizerId, eventId):
+    events = get_all_events_by_organizer(organizerId)
+    for event in events:
+        if event["id"] == eventId:
+            return event
+    raise LookupError(f"No posee un evento registrado con id '{eventId}'")
+
+
 def get_events_history(organizerId):
     events = event_repository.load_events()
     history = []
@@ -103,8 +128,7 @@ def get_events_history(organizerId):
     for event in events:
         eventDate = datetime.fromisoformat(event["datetime"])
         if event["organizerId"] == organizerId and (
-            event["status"] == "canceled" or eventDate <= currentDate
-        ):
+            event["status"] == "cancelled" or eventDate <= currentDate):
             history.append(event)
 
     history.sort(key=lambda event: event["datetime"], reverse=True)
@@ -124,7 +148,7 @@ def get_available_time_slots(venueId, date):
         existingDate = datetime.fromisoformat(event["datetime"])
         sameVenue = event["venueId"] == venue["id"]
         sameDay = existingDate.date() == selectedDate
-        if sameVenue and sameDay and event["status"] != "canceled":
+        if sameVenue and sameDay and event["status"] != "cancelled":
             occupiedSlots.append(existingDate.strftime("%H:%M"))
 
     availableSlots = []
@@ -197,6 +221,23 @@ def create_event(organizerId, name, description, date, time, selectedCategories,
     return newEvent
 
 
+def restore_event_availability(eventId, sectorName, quantity, seats):
+    event = get_event_by_id(eventId)
+    events = event_repository.load_events()
+    for storedEvent in events:
+        if storedEvent["id"] == event["id"]:
+            storedSector = storedEvent["sectors"][sectorName]
+            if "capacity" in storedSector:
+                storedSector["sold"] -= quantity
+            else:
+                for seat in seats:
+                    storedSector["seats"][seat[0]][seat[1]] = "free"
+            event_repository.save_events(events)
+            return storedEvent
+
+    raise LookupError(f"No existe un evento con id '{eventId}'")
+
+
 def update_sector_price(eventId, sectorName, price):
     event = get_event_by_id(eventId)
     if sectorName not in event["sectors"]:
@@ -263,8 +304,12 @@ def update_event_info(eventId, organizerId, name, description):
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
 
+
 def cancel_event(eventId, organizerId):
     event = get_event_by_id(eventId)
+    orders = order_service.get_active_orders_by_event_id(eventId)
+    if len(orders) > 0:
+        raise ValueError("El evento posee órdenes activas y no puede ser cancelado.")
     if event["organizerId"] != organizerId:
         raise PermissionError("El evento no pertenece al organizador.")
     if event["status"] == "cancelled":
@@ -278,49 +323,10 @@ def cancel_event(eventId, organizerId):
             return storedEvent
     raise LookupError(f"No existe un evento con id '{eventId}'")
 
-
-def get_event_sales(event):
-    sectors = []
-    totalSold = 0
-    totalCapacity = 0
-    totalRevenue = 0
-
-    for sectorName, sector in event["sectors"].items():
-        if "capacity" in sector:
-            capacity = sector["capacity"]
-            sold = sector["sold"]
-        elif "seats" in sector:
-            capacity = 0
-            sold = 0
-            for row in sector["seats"]:
-                for seat in row:
-                    capacity += 1
-                    if seat == "occupied":
-                        sold += 1
-        else:
-            capacity = 0
-            sold = 0
-
-        available = capacity - sold
-        price = sector["price"] if sector["price"] is not None else 0
-        revenue = sold * price
-        totalSold += sold
-        totalCapacity += capacity
-        totalRevenue += revenue
-        sectors.append({
-            "name": sectorName,
-            "sold": sold,
-            "available": available,
-            "capacity": capacity,
-            "revenue": revenue
-        })
-
-    return {
-        "sectors": sectors,
-        "totalSold": totalSold,
-        "totalAvailable": totalCapacity - totalSold,
-        "totalRevenue": totalRevenue
-    }
-
+def get_event_orders(eventId):
+    orders = order_service.get_active_orders_by_event_id(eventId)
+    if len(orders) == 0:
+        raise LookupError(f"El evento con id '{eventId}' no posee órdenes activas.")
+    return orders
 
 

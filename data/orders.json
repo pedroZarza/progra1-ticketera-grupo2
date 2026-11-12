@@ -1,1 +1,93 @@
-[]
+[
+    {
+        "customer_id": 6,
+        "event_id": 1,
+        "event_name": "nuevo evento",
+        "event_datetime": "2027-01-27T19:30",
+        "sector": "Platea",
+        "quantity": 5,
+        "seats": [
+            [
+                0,
+                0
+            ],
+            [
+                1,
+                0
+            ],
+            [
+                1,
+                2
+            ],
+            [
+                1,
+                1
+            ],
+            [
+                0,
+                2
+            ]
+        ],
+        "total": 15000.0,
+        "active": true,
+        "purchase_date": "2026-11-12T06:42",
+        "id": 1
+    },
+    {
+        "customer_id": 7,
+        "event_id": 1,
+        "event_name": "Jonnhy Marr Argentina",
+        "event_datetime": "2026-11-26T22:00",
+        "sector": "campo general",
+        "quantity": 3,
+        "seats": [],
+        "total": 378000.0,
+        "active": true,
+        "purchase_date": "2026-11-12T06:46",
+        "id": 2
+    },
+    {
+        "customer_id": 7,
+        "event_id": 1,
+        "event_name": "nuevo evento",
+        "event_datetime": "2027-01-27T19:30",
+        "sector": "Platea",
+        "quantity": 1,
+        "seats": [
+            [
+                0,
+                1
+            ]
+        ],
+        "total": 3000.0,
+        "active": false,
+        "purchase_date": "2026-11-12T08:40",
+        "id": 3
+    },
+    {
+        "customer_id": 7,
+        "event_id": 6,
+        "event_name": "nuevo evento",
+        "event_datetime": "2027-01-27T19:30",
+        "sector": "Campo",
+        "quantity": 10,
+        "seats": [],
+        "total": 10000.0,
+        "active": false,
+        "purchase_date": "2026-11-12T08:47",
+        "id": 4
+    },
+    {
+        "customer_id": 6,
+        "event_id": 1,
+        "event_name": "Noches de Rock",
+        "event_datetime": "2026-11-12T21:30",
+        "sector": "Campo",
+        "quantity": 2,
+        "seats": [],
+        "total": 30000,
+        "active": true,
+        "purchase_date": "2026-11-12T12:49",
+        "id": 5
+    }
+]

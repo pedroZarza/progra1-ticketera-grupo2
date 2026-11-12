@@ -63,5 +63,5 @@ def show_admin_menu(user):
                 break
             case _:
                 show_error("Opción inválida, elija una opción existente.")
-                
+                input("\nPresiona ENTER para volver al menú...")
                 

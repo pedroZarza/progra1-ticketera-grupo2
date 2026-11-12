@@ -36,6 +36,8 @@ def main():
                     redirect_by_user_role(user) #loguea automáticamente luego del registro. 
             case _:
                 show_error("Opción incorrecta, elija una opción existente.")
+                input("\nPresiona ENTER para volver al menú...")
+            
             
                 
 def redirect_by_user_role(user):

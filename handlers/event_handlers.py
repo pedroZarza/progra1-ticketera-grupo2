@@ -329,7 +329,7 @@ def remove_event_category(user):
                 break
 
         if selectedEvent is None:
-            show_error("Ese evento no está en tu lista.")
+            show_error("El evento ingresado no está en tu lista.")
             continue
         break
 
@@ -370,10 +370,10 @@ def edit_event_info(user):
         eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento que desea editar: ")
         if eventId == "q": return
 
-        newName = input_helpers.prompt_non_empty_field("Ingrese el nuevo nombre: ")
+        newName = input_helpers.prompt_non_empty_field("\nIngrese el nuevo nombre: ")
         if newName.lower() == "q": return
 
-        newDescription = input_helpers.prompt_non_empty_field("Ingrese la nueva descripción: ")
+        newDescription = input_helpers.prompt_non_empty_field("\nIngrese la nueva descripción: ")
         if newDescription.lower() == "q": return
 
         try:
@@ -406,7 +406,7 @@ def edit_event_prices(user):
                 break
 
         if selectedEvent is None:
-            show_error("Ese evento no está en tu lista.")
+            show_error("El evento ingresado no está en tu lista.")
             continue
 
         define_event_prices(selectedEvent["id"])
@@ -447,36 +447,59 @@ def view_event_history(user):
         show_info("No tenés eventos en el historial.")
         input("\nPresiona ENTER para volver al menú principal...")
         return
-    print("\nEventos pasados en el historial:")
+    print("\nHISTORIAL DE EVENTOS:")
     layout_helpers.organizer_events_board(events)
     input("\nPresiona ENTER para volver al menú principal...")
     return
 
 
 
-# def view_event_sales(user):
-#     operationSuccess = False
-#     events = event_service.get_events_by_organizer(user["id"])
-#     if len(events) == 0:
-#         show_info("No tenés eventos publicados.")
-#         return
+def view_event_orders(user):
+    events = event_service.get_events_by_organizer(user["id"])
+    if len(events) == 0:
+        show_info("No tenés eventos publicados.")
+        input("\nPresiona ENTER para volver al menú principal...")
+        return
+    layout_helpers.organizer_events_board(events)
+    operationSuccess = False
+    while not operationSuccess:
+        eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento que desea consultar: ")
+        if eventId == "q":
+            return
+        try:
+            orders = event_service.get_event_orders(eventId)
+            event = event_service.get_event_by_id(eventId)
+            layout_helpers.event_orders(event, orders)
+            operationSuccess = True        
+        except LookupError as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.lower() == "q": return
+    input("\nPresiona ENTER para volver al menú principal...")
+    return
 
-#     layout_helpers.organizer_events_board(events)
-
-#     while not operationSuccess:
-#         eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento que desea consultar: ")
-#         if eventId == "q": return
-
-#         try:
-#             event = event_service.get_event_by_organizer(user["id"], eventId)
-#             sales = event_service.get_event_sales(event)
-#             layout_helpers.event_sales(event, sales)
-#             operationSuccess = True
-#         except LookupError as error:
-#             show_error(error)
-#             response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
-#             if response.lower() == "q": return
-#     input("\nPresiona ENTER para volver al menú principal...")
+def view_event_sales_summary(user):
+    events = event_service.get_all_events_by_organizer(user["id"])
+    if len(events) == 0:
+        show_info("No tenés eventos publicados.")
+        input("\nPresiona ENTER para volver al menú principal...")
+        return
+    layout_helpers.organizer_events_board(events)
+    operationSuccess = False
+    while not operationSuccess:
+        eventId = input_helpers.prompt_positive_number("\nIngrese el ID del evento que desea consultar: ")
+        if eventId == "q":
+            return
+        try:
+            event = event_service.get_any_event_by_organizer(user["id"], eventId)
+            layout_helpers.event_status_summary(event)
+            operationSuccess = True
+        except LookupError as error:
+            show_error(error)
+            response = input("\nPresiona ENTER para volver a intentar o q para cancelar la operación...")
+            if response.lower() == "q":
+                return
+    input("\nPresiona ENTER para volver al menú principal...")
 
 
 

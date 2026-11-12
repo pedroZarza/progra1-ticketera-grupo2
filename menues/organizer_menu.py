@@ -15,8 +15,9 @@ def show_organizer_menu(user):
         print("6. Asignar categoría a un evento")
         print("7. Eliminar categoría de un evento")
         print("8. Cancelar evento")
-        print("9. Ver estado de ventas y disponibilidad de un evento")
-        print("10. Ver historial de eventos publicados")
+        print("9. Ver órdenes activas de un evento")
+        print("10. Ver resumen de ventas y disponibilidad de un evento")
+        print("11. Ver historial de eventos publicados")
         print("0. Cerrar sesión")    
         print("----------------------------------------------------------")
         option = input(">>> ")
@@ -42,9 +43,10 @@ def show_organizer_menu(user):
             case "8":
                 event_handlers.cancel_event(user)
             case "9":
-                # event_handlers.view_event_sales(user)
-                pass
+                event_handlers.view_event_orders(user)
             case "10":
+                event_handlers.view_event_sales_summary(user)
+            case "11":
                 event_handlers.view_event_history(user)
             case "11":
                 pass  # event_handler.generate_sales_report()
@@ -52,3 +54,4 @@ def show_organizer_menu(user):
                 break
             case _:
                 show_error("Opción inválida, elija una opción existente.")
+                input("\nPresiona ENTER para volver al menú...")
